@@ -1,0 +1,72 @@
+package microservices.book.mandelbrot.controller;
+
+
+import microservices.book.mandelbrot.domain.CalcParameters;
+import microservices.book.mandelbrot.domain.Calculation;
+import microservices.book.mandelbrot.domain.User;
+import microservices.book.mandelbrot.service.CalculationService;
+import microservices.book.mandelbrot.service.CalculationServiceImp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/mandelbrot")
+final class CalcParametersController {
+
+    private final CalculationService calculationService;
+
+    @Autowired
+    CalcParametersController(CalculationService calculationService) {
+        this.calculationService = calculationService;
+    }
+
+    // todo returnera Calculation objekt?
+//    @PostMapping()
+//    ResponseEntity<List<Integer>> postParams(@RequestBody CalcParameters calcParameters) {
+//        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
+//        Calculation calculation = new Calculation(new User(), calcParameters, resultInt, new Timestamp(new Date().getTime()));
+//        User user = new User(calcParameters.toString(), "enPassword");
+//        return new ResponseEntity<>(resultInt, HttpStatus.CREATED);
+//    }
+
+    @PostMapping("/test")
+    ResponseEntity<Calculation> testParams(@RequestBody CalcParameters calcParameters) {
+//        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
+        int[] calcResult = calculationService.calculateIntArea(calcParameters);
+        User user = new User(calcParameters.toString(), "enPassword");
+        Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
+        return new ResponseEntity<>(calculation, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/save")
+    ResponseEntity<String> saveCalculation(@RequestBody Calculation calculation) {
+        calculationService.saveCalculationToDatabase(calculation);
+        return new ResponseEntity<>("success", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/getCalculation")
+    ResponseEntity<Calculation> getCalculationById(@RequestBody Long id) {
+        Calculation result = calculationService.getCalculationById(id);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/getAllCalculationLight")
+    ResponseEntity<List<CalculationServiceImp.CalculationsRepresentation>> getAllCalculations() {
+
+        List<CalculationServiceImp.CalculationsRepresentation> getAllCalculationsRepresentations =
+                calculationService.getAllCalculationsRepresentations();
+
+        return new ResponseEntity<>(getAllCalculationsRepresentations, HttpStatus.CREATED);
+    }
+
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+<body>
+<!--onsubmit="return false;-->
+<div>
+    min_c_re <input type="text" id="min_c_re"> <br>
+    min_c_im <input type="text" id="min_c_im"> <br>
+    max_c_re <input type="text" id="max_c_re"> <br>
+    max_c_im <input type="text" id="max_c_im"><br>
+    x <input type="text" id="x"> <br>
+    y <input type="text" id="y"><br>
+    inf_n <input type="text" id="inf_n"> <br>
+    divider <input type="text" id="divider"><br>
+    <button type="button" id="test" onclick="sendParameters()">calc</button>
+    <button type="button" id="save" onclick="saveCalculation()">save</button>
+    <div>
+        <button type="button" id="go-right-btn" onclick="goSomeWhere('right')">→</button>
+        <button type="button" id="go-left-btn" onclick="goSomeWhere('left')">←</button>
+        <button type="button" id="go-up-btn" onclick="goSomeWhere('up')">↑</button>
+        <button type="button" id="go-down-btn" onclick="goSomeWhere('down')">↓</button>
+        <button type="button" id="go-zoom-in-btn" onclick="goSomeWhere('zoom-in')">+</button>
+        <button type="button" id="go-zoom-out-btn" onclick="goSomeWhere('zoom-out')">-</button>
+    </div>
+</div>
+
+<div>
+    <canvas id="myCanvas" height="100" width="100"></canvas>
+</div>
+
+<div>
+    <p> hämta calculation från databas</p>
+    <button type="button" id="load-calc-button" onclick="getCalcFromDBbyIDLoad()">load</button>
+    <button type="button" id="clear-calc-button" onclick="clearLoadedCanvasView()">clear</button>
+
+    <input type="text" id="load-id" value="id"> <br>
+    <canvas id="retrievedCanvas" height="100" width="100"></canvas>
+</div>
+<div>
+    <table id="calc-html-list">
+        <tr>
+            <th>id</th>
+            <th>min x</th>
+            <th>max x</th>
+            <th>min y</th>
+            <th>max y</th>
+            <th>resolution</th>
+            <th>timestamp</th>
+        </tr>
+    </table>
+    <button type="button" id="update-calcList" onclick="updateCalcList()">updateList</button>
+</div>
+<script src="mandelbrot-client.js"></script>
+</body>
+</html>
