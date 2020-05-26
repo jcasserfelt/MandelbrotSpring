@@ -12,7 +12,7 @@ function updateInputFields() {
     document.getElementById("min_c_re").value = global_min_c_re;
     document.getElementById("min_c_im").value = global_min_c_im;
     document.getElementById("max_c_re").value = global_max_c_re;
-    document.getElementById("max_c_im").value = global_min_c_im;
+    document.getElementById("max_c_im").value = global_max_c_im;
 }
 
 function goSomeWhere(input) {
