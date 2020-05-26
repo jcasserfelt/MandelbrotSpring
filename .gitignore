@@ -6,7 +6,7 @@ target/
 
 ### STS ###
 .apt_generated
-.classpath
+.classpathRun
 .factorypath
 .project
 .settings
@@ -29,3 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+!.idea
