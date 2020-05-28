@@ -13,6 +13,10 @@ function updateInputFields() {
     document.getElementById("min_c_im").value = global_min_c_im;
     document.getElementById("max_c_re").value = global_max_c_re;
     document.getElementById("max_c_im").value = global_max_c_im;
+    document.getElementById("x").value = global_x;
+    document.getElementById("y").value = global_y;
+    document.getElementById("inf_n").value = global_inf_n;
+    document.getElementById("divider").value = global_divider;
 }
 
 function goSomeWhere(input) {
@@ -89,7 +93,7 @@ function goSomeWhere(input) {
             console.log("Calculation objektet")
             console.log(result)
             currentCalculation = result;
-            drawCanvas(result.resultData)
+            drawCanvas(result)
         }
     });
     updateInputFields()
@@ -141,7 +145,7 @@ function sendParameters() {
             console.log("Calculation objektet")
             console.log(result)
             currentCalculation = result;
-            drawCanvas(result.resultData)
+            drawCanvas(result)
         }
     })
 }
@@ -150,15 +154,27 @@ function sendParameters() {
 //     sendParamters();
 // });
 
+function setGlobalVariablesFromCalculationObject(inputCalculation) {
+    global_min_c_re = inputCalculation.calcParameters.min_c_re;
+    global_min_c_im = inputCalculation.calcParameters.min_c_im;
+    global_max_c_re = inputCalculation.calcParameters.max_c_re;
+    global_max_c_im = inputCalculation.calcParameters.max_c_im;
+    global_x = inputCalculation.calcParameters.x;
+    global_y = inputCalculation.calcParameters.y;
+    global_inf_n = inputCalculation.calcParameters.inf_n;
+    global_divider = inputCalculation.calcParameters.divider;
+}
+
 function drawCanvasFromCalculation(inputCalculation) {
     var x = inputCalculation.calcParameters.x;
     var y = inputCalculation.calcParameters.y;
-    document.getElementById("retrievedCanvas").width = x;
-    document.getElementById("retrievedCanvas").height = y;
+    document.getElementById("myCanvas").width = x;
+    document.getElementById("myCanvas").height = y;
     console.log(inputCalculation.resultData);
-    var coolArray = convertArray(inputCalculation.resultData);
-    var canvas = document.getElementById("retrievedCanvas");
-
+    var coolArray = convertArray(inputCalculation);
+    var canvas = document.getElementById("myCanvas");
+    setGlobalVariablesFromCalculationObject(inputCalculation);
+    updateInputFields();
 
     var ctx = canvas.getContext("2d");
     var enNyImageData = ctx.createImageData(x, y);
@@ -172,13 +188,13 @@ function drawCanvasFromCalculation(inputCalculation) {
 }
 
 // todo refine redo reload
-function drawCanvas(inputArray) {
+function drawCanvas(inputCalculation) {
     x = $("#x").val();
     y = $("#y").val();
     document.getElementById("myCanvas").height = y;
     document.getElementById("myCanvas").width = x;
-    console.log(inputArray);
-    var coolArray = convertArray(inputArray);
+    console.log(inputCalculation.resultData);
+    var coolArray = convertArray(inputCalculation);
     var canvas = document.getElementById("myCanvas");
 
     var ctx = canvas.getContext("2d");
@@ -192,8 +208,8 @@ function drawCanvas(inputArray) {
     ctx.putImageData(enNyImageData, 0, 0);
 }
 
-function convertArray(inputarray) { //100
-    //400
+function convertArray2(inputarray) { //100
+
     var C;
     var R;
     var G;
@@ -212,14 +228,70 @@ function convertArray(inputarray) { //100
         // G = (C / 256) % 256;
         // B = C % 256;
 
-        B =  C & 255;
+        B = C & 255;
         G = (C >> 8) & 255;
-        R =   (C >> 16) & 255;
+        R = (C >> 16) & 255;
 
         resultArray[i + 0] = R;   //R
         resultArray[i + 1] = G;   //G
         resultArray[i + 2] = B;   //B
         resultArray[i + 3] = 255; //A
+        counter++;
+    }
+    return resultArray;
+}
+
+function convertArray(inputCalculation) { //inputarray
+    setGlobalVariablesFromCalculationObject(inputCalculation);
+    //400
+    var C;
+    var R;
+    var G;
+    var B;
+
+    var inputLength = Object.keys(inputCalculation.resultData).length;
+    var resultArray = new Uint8ClampedArray(inputLength * 4);
+
+    var increment = (2 * Math.PI) / global_inf_n;
+    var arg = 0;
+    var faktorR;
+
+
+    var counter = 0;
+    for (var i = 0; i < resultArray.length; i += 4) {
+        C = inputCalculation.resultData[counter];
+
+
+        arg = increment * C;
+        faktorR = (0.5 * Math.sin(arg)) + 0.5
+        faktorG = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5;
+        faktorB = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 2)) + 0.5;
+
+
+        C = C * global_divider;
+
+        R = Math.round(255 * faktorR);
+        G = Math.round(255 * faktorG);
+        B = Math.round(255 * faktorB);
+        //
+        // R = (C / (256 ^ 2)) % 256;
+        // G = (C / 256) % 256;
+        // B = C % 256;
+
+        // B = C & 255;
+        // G = (C >> 8) & 255;
+        // R = (C >> 16) & 255;
+
+        resultArray[i + 0] = R;   //R
+        resultArray[i + 1] = G;   //G
+        resultArray[i + 2] = B;   //B
+        resultArray[i + 3] = 255; //A
+
+        faktorR = 0;
+        faktorG = 0;
+        faktorB = 0;
+        arg = 0;
+
         counter++;
     }
     return resultArray;
