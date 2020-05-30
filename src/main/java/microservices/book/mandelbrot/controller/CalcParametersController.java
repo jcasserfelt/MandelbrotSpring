@@ -2,6 +2,7 @@ package microservices.book.mandelbrot.controller;
 
 
 import microservices.book.mandelbrot.domain.CalcParameters;
+import microservices.book.mandelbrot.domain.CalcResult;
 import microservices.book.mandelbrot.domain.Calculation;
 import microservices.book.mandelbrot.domain.User;
 import microservices.book.mandelbrot.service.CalculationService;
@@ -30,19 +31,11 @@ final class CalcParametersController {
         this.calculationService = calculationService;
     }
 
-    // todo returnera Calculation objekt?
-//    @PostMapping()
-//    ResponseEntity<List<Integer>> postParams(@RequestBody CalcParameters calcParameters) {
-//        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
-//        Calculation calculation = new Calculation(new User(), calcParameters, resultInt, new Timestamp(new Date().getTime()));
-//        User user = new User(calcParameters.toString(), "enPassword");
-//        return new ResponseEntity<>(resultInt, HttpStatus.CREATED);
-//    }
-
     @PostMapping("/test")
     ResponseEntity<Calculation> testParams(@RequestBody CalcParameters calcParameters) {
 //        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
-        int[] calcResult = calculationService.calculateIntArea(calcParameters);
+
+        CalcResult calcResult =  calculationService.calculateIntArea(calcParameters);
         User user = new User(calcParameters.toString(), "enPassword");
         Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
         return new ResponseEntity<>(calculation, HttpStatus.CREATED);

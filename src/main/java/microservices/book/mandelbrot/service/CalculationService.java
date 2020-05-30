@@ -1,6 +1,7 @@
 package microservices.book.mandelbrot.service;
 
 import microservices.book.mandelbrot.domain.CalcParameters;
+import microservices.book.mandelbrot.domain.CalcResult;
 import microservices.book.mandelbrot.domain.Calculation;
 
 import java.util.List;
@@ -31,8 +32,7 @@ public interface CalculationService {
      */
     List<Byte> calculateArea(CalcParameters parameters);
 
-
-    int[] calculateIntArea(CalcParameters parameters);
+    CalcResult calculateIntArea(CalcParameters parameters);
 
     List<CalculationServiceImp.InnerCoords> makeCoordinates(CalcParameters parameters);
 

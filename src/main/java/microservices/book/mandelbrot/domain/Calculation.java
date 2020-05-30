@@ -3,11 +3,7 @@ package microservices.book.mandelbrot.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 // @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
@@ -16,7 +12,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @Entity
-public class Calculation {
+public final class Calculation {
 
     @Id
     @GeneratedValue
@@ -35,8 +31,10 @@ public class Calculation {
     private final CalcParameters calcParameters;
 
 
-//    @Lob
-    private final int[] resultData;
+    //    @Lob
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "CALCRESULT_ID")
+    private final CalcResult resultObj;
 
     private final Timestamp timestamp;
 
@@ -51,11 +49,11 @@ public class Calculation {
 //        name = null;
         user = null;
         calcParameters = null;
-        resultData = null;
+        resultObj = null;
         timestamp = null;
     }
 
-    public void resetResultdata(){
+    public void resetResultdata() {
         return;
     }
 }

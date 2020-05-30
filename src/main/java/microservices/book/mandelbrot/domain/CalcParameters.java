@@ -1,27 +1,20 @@
 package microservices.book.mandelbrot.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
 @Entity
-public class CalcParameters {
+public final class CalcParameters {
 
     @Id
-    @GeneratedValue
-    @Column(name = "CALCPARAMETERS_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "CALCPARAMETERS_ID", updatable = false, nullable = false)
     private Long id;
-
 
     private final double min_c_re;              // min real value
     private final double min_c_im;              // min imaginary value

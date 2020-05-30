@@ -3,6 +3,7 @@ package microservices.book.mandelbrot.service;
 import lombok.Getter;
 import lombok.Setter;
 import microservices.book.mandelbrot.domain.CalcParameters;
+import microservices.book.mandelbrot.domain.CalcResult;
 import microservices.book.mandelbrot.domain.Calculation;
 import microservices.book.mandelbrot.domain.User;
 import microservices.book.mandelbrot.repository.CalculationRepository;
@@ -53,18 +54,19 @@ public class CalculationServiceImp implements CalculationService {
         double cx = x;
         double cy = y;
 
-        int i = 0;
+        int i = 0; // remove
         for (i = 1; i <= iterations; i++) {
             double nx = x * x - y * y + cx;
             double ny = 2 * x * y + cy;
             x = nx;
             y = ny;
 
-            double resultValue = x * x + y * y;
+//            double resultValue = x * x + y * y;
             if (x * x + y * y > 2) {
                 return i;
             }
         }
+        // remove
         if (i == iterations) {
             return iterations;
         }
@@ -72,24 +74,31 @@ public class CalculationServiceImp implements CalculationService {
     }
 
     @Override
-    public int[] calculateIntArea(CalcParameters parameters) {
+    public CalcResult calculateIntArea(CalcParameters parameters) {
+
         List<InnerCoords> coordinates = makeCoordinates(parameters);
-        List<Integer> resultList = new ArrayList<>();
+        long totalIterations = 0;
         int[] resultArray = new int[coordinates.size()];
+        List<Integer> resultList = new ArrayList<>();
 
         int counter = 0;
+        long startTime = System.currentTimeMillis();
         try {
             for (InnerCoords tempCoordinate : coordinates) {
                 int temp = calculateIntPoint(tempCoordinate.xVal, tempCoordinate.yVal, parameters.getInf_n());
-                resultList.add(temp);
+
                 resultArray[counter] = temp;
+                resultList.add(temp);
+                totalIterations += temp;
                 counter++;
             }
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Index vid outofbounce: " + counter);
             e.printStackTrace();
         }
-        return resultArray;
+        long finishTime = System.currentTimeMillis();
+        long calcTime = finishTime - startTime;
+        return new CalcResult(resultArray, calcTime, totalIterations);
     }
 
     @Override

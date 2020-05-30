@@ -142,8 +142,8 @@ function sendParameters() {
         dataType: "json",
         async: false,
         success: function (result) {
-            console.log("Calculation objektet")
-            console.log(result)
+            console.log("Calculation objektet");
+            console.log(result);
             currentCalculation = result;
             drawCanvas(result)
         }
@@ -170,7 +170,7 @@ function drawCanvasFromCalculation(inputCalculation) {
     var y = inputCalculation.calcParameters.y;
     document.getElementById("myCanvas").width = x;
     document.getElementById("myCanvas").height = y;
-    console.log(inputCalculation.resultData);
+    console.log(inputCalculation.resultObj.resultData);
     var coolArray = convertArray(inputCalculation);
     var canvas = document.getElementById("myCanvas");
     setGlobalVariablesFromCalculationObject(inputCalculation);
@@ -193,7 +193,7 @@ function drawCanvas(inputCalculation) {
     y = $("#y").val();
     document.getElementById("myCanvas").height = y;
     document.getElementById("myCanvas").width = x;
-    console.log(inputCalculation.resultData);
+    console.log(inputCalculation.resultObj.resultData);
     var coolArray = convertArray(inputCalculation);
     var canvas = document.getElementById("myCanvas");
 
@@ -206,6 +206,7 @@ function drawCanvas(inputCalculation) {
     }
     console.log(coolArray);
     ctx.putImageData(enNyImageData, 0, 0);
+    updateCalcDetailsTable(inputCalculation);
 }
 
 function convertArray2(inputarray) { //100
@@ -249,7 +250,7 @@ function convertArray(inputCalculation) { //inputarray
     var G;
     var B;
 
-    var inputLength = Object.keys(inputCalculation.resultData).length;
+    var inputLength = Object.keys(inputCalculation.resultObj.resultData).length;
     var resultArray = new Uint8ClampedArray(inputLength * 4);
 
     var increment = (2 * Math.PI) / global_inf_n;
@@ -259,7 +260,7 @@ function convertArray(inputCalculation) { //inputarray
 
     var counter = 0;
     for (var i = 0; i < resultArray.length; i += 4) {
-        C = inputCalculation.resultData[counter];
+        C = inputCalculation.resultObj.resultData[counter];
 
 
         arg = increment * C;
@@ -334,7 +335,7 @@ function saveCalculation() {
 }
 
 function clearLoadedCanvasView() {
-    var canvas = document.getElementById("retrievedCanvas");
+    var canvas = document.getElementById("myCanvas");
     var x = canvas.width;
     var y = canvas.height;
     var context = canvas.getContext('2d');
@@ -375,6 +376,32 @@ function getCalcFromDBbyID(id) {
     })
 }
 
+function updateCalcDetailsTable(calculation) {
+    var calcTime = calculation.resultObj.calculationTime;
+    var totalIterations = (calculation.resultObj.totalIterations).toExponential(3);
+    var timePerIteration = (calculation.resultObj.calculationTime / calculation.resultObj.totalIterations).toExponential(3);
+    var deltaX = (calculation.calcParameters.max_c_re - calculation.calcParameters.min_c_re).toExponential(3);
+    var deltaY = (calculation.calcParameters.max_c_im - calculation.calcParameters.min_c_im).toExponential(3);
+    var x = calculation.calcParameters.x;
+    var y = calculation.calcParameters.y;
+
+    var emptyTable = "<tr> <th>calc time</th> <th>iterations</th> <th>time/iteration</th> <th>deltaX</th> <th>deltaY</th> <th>X</th><th>Y</th></tr>";
+    var table = document.getElementById("calc-detail-table");
+    table.innerHTML = emptyTable;
+    var htmlString = "";
+    htmlString += "<tr>";
+    htmlString += "<td>" + calcTime + "</td>";
+    htmlString += "<td>" + totalIterations + "</td>";
+    htmlString += "<td>" + timePerIteration + "</td>";
+    htmlString += "<td>" + deltaX + "</td>";
+    htmlString += "<td>" + deltaY + "</td>";
+    htmlString += "<td>" + x + "</td>";
+    htmlString += "<td>" + y + "</td>";
+    htmlString += "</tr>";
+    table.innerHTML += htmlString;
+
+}
+
 function updateCalcList() {
     $.ajax({
         url: '/mandelbrot/getAllCalculationLight',
@@ -384,9 +411,9 @@ function updateCalcList() {
         dataType: "json",
         async: false,
         success: function (result) {
-            var letsSee = result;
-            console.log(letsSee);
-            console.log(result);
+            // var letsSee = result;
+            // console.log(letsSee);
+            // console.log(result);
 
             var emptyTable = "<tr> <th>id</th> <th>min x</th> <th>max x</th> <th>min y</th> <th>max y</th> <th>resolution</th> <th>timestamp</th> <th>view</th> </tr>";
             var table = document.getElementById("calc-html-list");
