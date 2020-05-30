@@ -1,7 +1,7 @@
 # MandelbrotSpring
 Web application, visualisation of the Mandelbrot set
 
-###To run the application:
+##To run the application:
 1. clone project
 2. set up maven in IDE
 
