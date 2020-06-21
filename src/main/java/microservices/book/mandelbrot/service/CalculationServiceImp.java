@@ -250,6 +250,8 @@ public class CalculationServiceImp implements CalculationService {
 
     @Override
     public Calculation performParallelCalculation(CalcParameters p) {
+        long startTimeParallel = System.currentTimeMillis();
+
         int amountOfCoordinates = p.getX() * p.getY();
         int[] resultArray = new int[amountOfCoordinates];
         int coordsPerSubArea = Math.floorDiv(amountOfCoordinates, p.getDivider());
@@ -284,7 +286,7 @@ public class CalculationServiceImp implements CalculationService {
             System.out.println("invoke all: " + (System.currentTimeMillis() - startTime));
             long startTimeFuture = System.currentTimeMillis();
             for (Future<CalcSubResult> future : futures) {
-                calcTime += future.get().calcTime;
+//                calcTime += future.get().calcTime;
                 int subResultLength = future.get().subResultArray.length;
                 int subResultOrder = future.get().order;
                 int index = (coordsPerSubArea * (future.get().order));
@@ -300,7 +302,8 @@ public class CalculationServiceImp implements CalculationService {
             e.printStackTrace();
         }
 
-
+        calcTime = (int) (System.currentTimeMillis() - startTimeParallel);
+        System.out.println("calcTime varable: " + calcTime);
         // return new CalcResult(resultArray, calcTime, totalIterations);
         CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
         // Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
