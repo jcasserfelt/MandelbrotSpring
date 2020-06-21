@@ -24,10 +24,10 @@ public final class CalcResult {
 //    @Column(columnDefinition = "org.hibernate.type.BlobType")
 
     //    @Type(type = "org.hibernate.type.BlobType")
-    private final int[] resultData;
+    public final int[] resultData;
 
-    private final long calculationTime;
-    private final long totalIterations;
+    public final long calculationTime;
+    public final long totalIterations;
 
 
     //    public CalcResult(){

@@ -24,6 +24,7 @@ public interface CalculationService {
 
     int calculateIntPoint(double x, double y, int iterations);
 
+    void convertToRGBA(CalcResult calcResult);
 
     /**
      * @param parameters object containing boundary values needed
@@ -43,6 +44,10 @@ public interface CalculationService {
     List<Calculation> getAllCalculations();
 
     List<CalculationServiceImp.CalculationsRepresentation> getAllCalculationsRepresentations();
+
+    Calculation performParallelCalculation(CalcParameters parameters);
+
+    List<CalculationServiceImp.InnerCoords> pickOutSubSetOfCoordinates(int order, int divider, List<CalculationServiceImp.InnerCoords> allCoords);
 
 
 }

@@ -9,31 +9,44 @@
 </head>
 <body>
 <!--onsubmit="return false;-->
+min_c_re <input type="text" id="min_c_re"> <br>
+min_c_im <input type="text" id="min_c_im"> <br>
+max_c_re <input type="text" id="max_c_re"> <br>
+max_c_im <input type="text" id="max_c_im"><br>
+x <input type="text" id="x"> <br>
+y <input type="text" id="y"><br>
+inf_n <input type="text" id="inf_n"> <br>
+divider <input type="text" id="divider"><br>
+
 <div>
-    min_c_re <input type="text" id="min_c_re"> <br>
-    min_c_im <input type="text" id="min_c_im"> <br>
-    max_c_re <input type="text" id="max_c_re"> <br>
-    max_c_im <input type="text" id="max_c_im"><br>
-    x <input type="text" id="x"> <br>
-    y <input type="text" id="y"><br>
-    inf_n <input type="text" id="inf_n"> <br>
-    divider <input type="text" id="divider"><br>
-    <button type="button" id="test" onclick="sendParameters()">calc</button>
+    <button type="button" id="test" onclick="sendParameters()">calc new</button>
     <button type="button" id="save" onclick="saveCalculation()">save</button>
-    <div>
-        <button type="button" id="go-right-btn" onclick="goSomeWhere('right')">→</button>
-        <button type="button" id="go-left-btn" onclick="goSomeWhere('left')">←</button>
-        <button type="button" id="go-up-btn" onclick="goSomeWhere('up')">↑</button>
-        <button type="button" id="go-down-btn" onclick="goSomeWhere('down')">↓</button>
-        <button type="button" id="go-zoom-in-btn" onclick="goSomeWhere('zoom-in')">+</button>
-        <button type="button" id="go-zoom-out-btn" onclick="goSomeWhere('zoom-out')">-</button>
-    </div>
+    <br>
+    <button type="button" id="go-right-btn" onclick="goSomeWhere('right')">→</button>
+    <button type="button" id="go-left-btn" onclick="goSomeWhere('left')">←</button>
+    <button type="button" id="go-up-btn" onclick="goSomeWhere('up')">↑</button>
+    <button type="button" id="go-down-btn" onclick="goSomeWhere('down')">↓</button>
+    <button type="button" id="go-zoom-in-btn" onclick="goSomeWhere('zoom-in')">+</button>
+    <button type="button" id="go-zoom-out-btn" onclick="goSomeWhere('zoom-out')">-</button>
+</div>
+<br>
+
+<div>
+    <button type="button" id="testOld" onclick="sendParametersOld()">calc old</button>
+    <button type="button" id="save2" onclick="saveCalculation()">save</button>
+    <br>
+    <button type="button" id="old-go-right-btn" onclick="goSomeWhere('right','old')">→</button>
+    <button type="button" id="old-go-left-btn" onclick="goSomeWhere('left','old')">←</button>
+    <button type="button" id="old-go-up-btn" onclick="goSomeWhere('up','old')">↑</button>
+    <button type="button" id="old-go-down-btn" onclick="goSomeWhere('down','old')">↓</button>
+    <button type="button" id="old-go-zoom-in-btn" onclick="goSomeWhere('zoom-in','old')">+</button>
+    <button type="button" id="old-go-zoom-out-btn" onclick="goSomeWhere('zoom-out','old')">-</button>
+</div>
 </div>
 
 <div>
-    <canvas id="myCanvas" height="100" width="100"></canvas>
     <table id="calc-detail-table">
-<!--        <tr>-->
+        <!--        <tr>-->
         <!--            <th>calc time</th>-->
         <!--            <th>totalIterations</th>-->
         <!--            <th>timePerIteration</th>-->
@@ -42,6 +55,7 @@
         <!--            <th>resolution</th>-->
         <!--        </tr>-->
     </table>
+    <canvas id="myCanvas" height="100" width="100"></canvas>
 </div>
 
 <div>
@@ -51,6 +65,12 @@
 
     <input type="text" id="load-id" value="id"> <br>
     <canvas id="retrievedCanvas" height="100" width="100"></canvas>
+</div>
+<div>
+    <canvas id="colour-spectrum-canvas" height="100" width="100"></canvas>
+    <br>
+    <button type="button" id="draw-color-spectrum-button" onclick="drawSpectrumCanvas()">spectrum</button>
+
 </div>
 <div>
     <table id="calc-html-list">

@@ -34,10 +34,28 @@ final class CalcParametersController {
     @PostMapping("/test")
     ResponseEntity<Calculation> testParams(@RequestBody CalcParameters calcParameters) {
 //        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
+        long startTime = System.currentTimeMillis();
 
         CalcResult calcResult =  calculationService.calculateIntArea(calcParameters);
         User user = new User(calcParameters.toString(), "enPassword");
         Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
+        long calcTime = System.currentTimeMillis() - startTime;
+        System.out.println("hela testParams: " + calcTime);
+        System.out.println("------------------");
+//        calculation.getResultObj().calculationTime = calcTime;
+        return new ResponseEntity<>(calculation, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/calcParallel")
+    ResponseEntity<Calculation> calcParallel(@RequestBody CalcParameters calcParameters) {
+
+//        CalcResult calcResult =  calculationService.calculateIntArea(calcParameters);
+//        User user = new User(calcParameters.toString(), "enPassword");
+        long startTime = System.currentTimeMillis();
+        Calculation calculation = calculationService.performParallelCalculation(calcParameters);
+        System.out.println("hela calcParallel: " + (System.currentTimeMillis() - startTime));
+        System.out.println("------------------");
+
         return new ResponseEntity<>(calculation, HttpStatus.CREATED);
     }
 

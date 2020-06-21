@@ -19,7 +19,7 @@ function updateInputFields() {
     document.getElementById("divider").value = global_divider;
 }
 
-function goSomeWhere(input) {
+function goSomeWhere(input, newOrOld) {
     parseGlobalVariablesToFloat();
     var xStepSize = global_max_c_re - global_min_c_re;
     var yStepSize = global_max_c_im - global_min_c_re;
@@ -82,8 +82,13 @@ function goSomeWhere(input) {
         }
     };
 
+    var urlString = '';
+    if(newOrOld === "old"){
+        urlString = '/mandelbrot/test';
+    } else urlString = '/mandelbrot/calcParallel';
+
     $.ajax({
-        url: '/mandelbrot/test',
+        url: urlString,
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -135,6 +140,46 @@ function sendParameters() {
     };
 
     $.ajax({
+        url: '/mandelbrot/calcParallel',
+        type: 'POST',
+        data: JSON.stringify(input.parameterObject),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,
+        success: function (result) {
+            console.log("Calculation objektet");
+            console.log(result);
+            currentCalculation = result;
+            drawCanvas(result);
+            // drawSpectrumCanvas(result);
+        }
+    })
+}
+
+function sendParametersOld() {
+    global_min_c_re = $("#min_c_re").val();
+    global_min_c_im = $("#min_c_im").val();
+    global_max_c_re = $("#max_c_re").val();
+    global_max_c_im = $("#max_c_im").val();
+    global_x = $("#x").val();
+    global_y = $("#y").val();
+    global_inf_n = $("#inf_n").val();
+    global_divider = $("#divider").val();
+
+    var input = {
+        parameterObject: {
+            min_c_re: global_min_c_re,
+            min_c_im: global_min_c_im,
+            max_c_re: global_max_c_re,
+            max_c_im: global_max_c_im,
+            x: global_x,
+            y: global_y,
+            inf_n: global_inf_n,
+            divider: global_divider
+        }
+    };
+
+    $.ajax({
         url: '/mandelbrot/test',
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
@@ -145,7 +190,8 @@ function sendParameters() {
             console.log("Calculation objektet");
             console.log(result);
             currentCalculation = result;
-            drawCanvas(result)
+            drawCanvas(result);
+            // drawSpectrumCanvas(result);
         }
     })
 }
@@ -163,6 +209,82 @@ function setGlobalVariablesFromCalculationObject(inputCalculation) {
     global_y = inputCalculation.calcParameters.y;
     global_inf_n = inputCalculation.calcParameters.inf_n;
     global_divider = inputCalculation.calcParameters.divider;
+}
+
+function generateColorSpectrumArray(inputCalculation) {
+    var x = inputCalculation.calcParameters.inf_n;
+    var y = 100;
+    var iterations = inputCalculation.calcParameters.inf_n;
+    document.getElementById("myCanvas").width = x;
+    document.getElementById("myCanvas").height = y;
+    // var coolArray = convertArray(inputCalculation);
+    var arraySize = inputCalculation.calcParameters.inf_n * 4 * y;
+    var resultArray = new Uint8ClampedArray(parseInt(arraySize));
+
+    // var inputLength = Object.keys(inputCalculation.resultObj.resultData).length;
+    // var resultArray = new Uint8ClampedArray(inputLength * 4);
+
+    var R;
+    var G;
+    var B;
+
+    var increment = (2 * Math.PI) / iterations;
+    var arg = 0;
+    var factorR;
+    var factorG;
+    var factorB;
+
+    var counter = 0;
+    for (var i = 0; i < y; i++) {
+        for (var j = 0; j < iterations * 4; j += 4) {
+            C = counter;
+            arg = increment * C;
+            faktorR = ((0.5 * Math.sin(arg+(2*Math.PI)/10*6)) + 0.5)%255;
+            faktorG = faktorR += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5);
+            faktorB = faktorG += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5);
+
+            R = Math.round(255 * faktorR);
+            G = Math.round(255 * faktorG);
+            B = Math.round(255 * faktorB);
+
+            resultArray[j + 0] = R;   //R
+            resultArray[j + 1] = G;   //G
+            resultArray[j + 2] = B;   //B
+            resultArray[j + 3] = 255; //A
+
+            counter++;
+        }
+        faktorR = 0;
+        faktorG = 0;
+        faktorB = 0;
+        arg = 0;
+        counter = 0;
+    }
+    return resultArray;
+}
+
+// inputCalculation.calcParameters.inf_n
+function drawSpectrumCanvas(inputCalculation) {
+    // array = generateColorSpectrumArray(inputCalculation);
+    x = inputCalculation.calcParameters.inf_n;
+    y = 100;
+    document.getElementById("colour-spectrum-canvas").width = x;
+    document.getElementById("colour-spectrum-canvas").height = y;
+    // console.log(inputCalculation.resultObj.resultData);
+    var coolArray = generateColorSpectrumArray(inputCalculation);
+    var canvas = document.getElementById("colour-spectrum-canvas");
+
+    var ctx = canvas.getContext("2d");
+    var enNyImageData = ctx.createImageData(x, y);
+    enNyImageData.data = coolArray;
+
+    for (var i = 0; i < coolArray.length; i++) {
+        enNyImageData.data[i] = coolArray[i];
+    }
+    console.log(coolArray);
+    ctx.putImageData(enNyImageData, 0, 0);
+    updateCalcDetailsTable(inputCalculation);
+
 }
 
 function drawCanvasFromCalculation(inputCalculation) {
@@ -253,12 +375,12 @@ function convertArray(inputCalculation) { //inputarray
     var inputLength = Object.keys(inputCalculation.resultObj.resultData).length;
     var resultArray = new Uint8ClampedArray(inputLength * 4);
 
-    var increment = (2 * Math.PI) / global_inf_n;
     var arg = 0;
     var faktorR;
-
-
     var counter = 0;
+
+
+    var increment = (2 * Math.PI) / global_inf_n;
     for (var i = 0; i < resultArray.length; i += 4) {
         C = inputCalculation.resultObj.resultData[counter];
 
@@ -274,14 +396,6 @@ function convertArray(inputCalculation) { //inputarray
         R = Math.round(255 * faktorR);
         G = Math.round(255 * faktorG);
         B = Math.round(255 * faktorB);
-        //
-        // R = (C / (256 ^ 2)) % 256;
-        // G = (C / 256) % 256;
-        // B = C % 256;
-
-        // B = C & 255;
-        // G = (C >> 8) & 255;
-        // R = (C >> 16) & 255;
 
         resultArray[i + 0] = R;   //R
         resultArray[i + 1] = G;   //G

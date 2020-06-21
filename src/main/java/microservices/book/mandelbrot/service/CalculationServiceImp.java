@@ -1,7 +1,7 @@
 package microservices.book.mandelbrot.service;
 
-import lombok.Getter;
-import lombok.Setter;
+import javassist.runtime.Inner;
+import lombok.*;
 import microservices.book.mandelbrot.domain.CalcParameters;
 import microservices.book.mandelbrot.domain.CalcResult;
 import microservices.book.mandelbrot.domain.Calculation;
@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.*;
 
 @Service
 public class CalculationServiceImp implements CalculationService {
@@ -24,6 +26,74 @@ public class CalculationServiceImp implements CalculationService {
     @Autowired
     public CalculationServiceImp(CalculationRepository calculationRepository) {
         this.calculationRepository = calculationRepository;
+
+    }
+
+    @Override
+    public int calculateIntPoint(double x, double y, int iterations) {
+        double cx = x;
+        double cy = y;
+
+        int i = 0; // remove
+        for (i = 1; i <= iterations; i++) {
+            double nx = x * x - y * y + cx;
+            double ny = 2 * x * y + cy;
+            x = nx;
+            y = ny;
+
+//            double resultValue = x * x + y * y;
+            if (x * x + y * y > 2) {
+                return i;
+            }
+        }
+        // remove
+//        if (i == iterations) {
+//            return iterations;
+//        }
+        return iterations;
+    }
+
+    @Override
+    public CalcResult calculateIntArea(CalcParameters parameters) {
+
+
+//        for (int i = 0; i < 10; i++) {
+//            long startTimeMakeCoords = System.currentTimeMillis();
+//            List<InnerCoords> coordinates = makeCoordinates(parameters);
+//            long endTimeMakeCoords = System.currentTimeMillis();
+//            long timeCoords = endTimeMakeCoords - startTimeMakeCoords;
+//
+//            System.out.println(i + ": " + timeCoords);
+//        }
+//        System.out.println("-------------");
+        List<InnerCoords> coordinates = makeCoordinates(parameters);
+        long totalIterations = 0;
+        int[] resultArray = new int[coordinates.size()];
+//        List<Integer> resultList = new ArrayList<>();
+
+        int counter = 0;
+        long startTime = System.currentTimeMillis();
+        try {
+            for (InnerCoords tempCoordinate : coordinates) {
+                int temp = calculateIntPoint(tempCoordinate.xVal, tempCoordinate.yVal, parameters.getInf_n());
+
+                resultArray[counter] = temp;
+//                resultList.add(temp);
+                totalIterations += temp;
+                counter++;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Index vid outofbounce: " + counter);
+            e.printStackTrace();
+        }
+        long finishTime = System.currentTimeMillis();
+        long calcTime = finishTime - startTime;
+        return new CalcResult(resultArray, calcTime, totalIterations);
+    }
+
+    @Override
+    public void convertToRGBA(CalcResult calcResult) {
+
     }
 
     @Override
@@ -47,58 +117,6 @@ public class CalculationServiceImp implements CalculationService {
             return (byte) iterations;
         }
         return (byte) iterations;
-    }
-
-    @Override
-    public int calculateIntPoint(double x, double y, int iterations) {
-        double cx = x;
-        double cy = y;
-
-        int i = 0; // remove
-        for (i = 1; i <= iterations; i++) {
-            double nx = x * x - y * y + cx;
-            double ny = 2 * x * y + cy;
-            x = nx;
-            y = ny;
-
-//            double resultValue = x * x + y * y;
-            if (x * x + y * y > 2) {
-                return i;
-            }
-        }
-        // remove
-        if (i == iterations) {
-            return iterations;
-        }
-        return iterations;
-    }
-
-    @Override
-    public CalcResult calculateIntArea(CalcParameters parameters) {
-
-        List<InnerCoords> coordinates = makeCoordinates(parameters);
-        long totalIterations = 0;
-        int[] resultArray = new int[coordinates.size()];
-        List<Integer> resultList = new ArrayList<>();
-
-        int counter = 0;
-        long startTime = System.currentTimeMillis();
-        try {
-            for (InnerCoords tempCoordinate : coordinates) {
-                int temp = calculateIntPoint(tempCoordinate.xVal, tempCoordinate.yVal, parameters.getInf_n());
-
-                resultArray[counter] = temp;
-                resultList.add(temp);
-                totalIterations += temp;
-                counter++;
-            }
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Index vid outofbounce: " + counter);
-            e.printStackTrace();
-        }
-        long finishTime = System.currentTimeMillis();
-        long calcTime = finishTime - startTime;
-        return new CalcResult(resultArray, calcTime, totalIterations);
     }
 
     @Override
@@ -193,16 +211,21 @@ public class CalculationServiceImp implements CalculationService {
         return calculationsRepresentations;
     }
 
+    @ToString
     @Getter
     public final class InnerCoords {
 
         double xVal;
         double yVal;
 
+//        BigDecimal
+
         public InnerCoords(double xVal, double yVal) {
             this.xVal = xVal;
             this.yVal = yVal;
         }
+
+
     }
 
     @Getter
@@ -222,5 +245,162 @@ public class CalculationServiceImp implements CalculationService {
             this.resultData = null;
             this.timestamp = calculation.getTimestamp();
         }
+    }
+
+
+    @Override
+    public Calculation performParallelCalculation(CalcParameters p) {
+        int amountOfCoordinates = p.getX() * p.getY();
+        int[] resultArray = new int[amountOfCoordinates];
+        int coordsPerSubArea = Math.floorDiv(amountOfCoordinates, p.getDivider());
+        List<InnerCoords> allCoords = makeCoordinates(p);
+
+        // testning av metod
+//        List<InnerCoords> subArea = pickOutSubSetOfCoordinates(1, p.getDivider(), allCoords);
+//        CalcTask testTask = new CalcTask(1, p, allCoords);
+//        testTask.calcArea(allCoords);
+
+        List<List<InnerCoords>> tempList = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            tempList.add(pickOutSubSetOfCoordinates(i, 4, allCoords));
+        }
+
+        int coreCount = Runtime.getRuntime().availableProcessors();
+        ExecutorService service = Executors.newFixedThreadPool(coreCount);
+
+        List<CalcTask> calcTasks = new ArrayList<>();
+        int calcTime = 0;
+        for (int i = 0; i < (p.getDivider()); i++) {
+            long startTimeTask = System.currentTimeMillis();
+            CalcTask task = new CalcTask(i, p, allCoords);
+//            System.out.println("skapa CalcTask" + i + ": " + (System.currentTimeMillis() - startTimeTask));
+//            Future<CalcSubResult> future = service.submit(task);
+            calcTasks.add(task);
+        }
+        try {
+            long startTime = System.currentTimeMillis();
+            System.out.println("invoke all started");
+            List<Future<CalcSubResult>> futures = service.invokeAll(calcTasks);
+            System.out.println("invoke all: " + (System.currentTimeMillis() - startTime));
+            long startTimeFuture = System.currentTimeMillis();
+            for (Future<CalcSubResult> future : futures) {
+                calcTime += future.get().calcTime;
+                int subResultLength = future.get().subResultArray.length;
+                int subResultOrder = future.get().order;
+                int index = (coordsPerSubArea * (future.get().order));
+
+                for (int j = 0; j < future.get().subResultArray.length; j++) {
+                    resultArray[j + index] = future.get().subResultArray[j];
+                }
+            }
+            System.out.println("sort out futures: " + (System.currentTimeMillis() - startTimeFuture));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+        // return new CalcResult(resultArray, calcTime, totalIterations);
+        CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
+        // Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
+        return new Calculation(new User(), p, calcResult, new Timestamp(new Date().getTime()));
+    }
+
+
+    public final class CalcTask implements Callable<CalcSubResult> {
+
+        int order;
+        CalcParameters parameters;
+        List<InnerCoords> allCoords;
+
+        public CalcTask(int order, CalcParameters parameters, List<InnerCoords> allCoords) {
+
+            this.order = order;
+            this.parameters = parameters;
+            this.allCoords = allCoords;
+        }
+
+        public int[] calcArea(List<InnerCoords> coords) {
+            int[] resultArray = new int[coords.size()];
+
+            int counter = 0;
+            int tempResult = 0;
+            int totalIterations = 0;
+            for (InnerCoords c : coords) {
+                tempResult = calculateIntPoint(c.xVal, c.yVal, this.parameters.getInf_n());
+                resultArray[counter] = tempResult;
+                totalIterations += tempResult;
+                counter++;
+            }
+            return resultArray;
+        }
+
+        public int calculateIntPoint(double x, double y, int iterations) {
+            double cx = x;
+            double cy = y;
+
+            int i = 0; // remove
+            for (i = 1; i <= iterations; i++) {
+                double nx = x * x - y * y + cx;
+                double ny = 2 * x * y + cy;
+                x = nx;
+                y = ny;
+
+//            double resultValue = x * x + y * y;
+                if (x * x + y * y > 2) {
+                    return i;
+                }
+            }
+
+            return iterations;
+        }
+
+        @Override
+        public CalcSubResult call() throws Exception {
+            int testApa = 20;
+            int[] subResult = new int[0];
+            long calcTime = 0;
+            try {
+//                System.out.println("inside callable");
+                List<InnerCoords> subArea = pickOutSubSetOfCoordinates(this.order, parameters.getDivider(), allCoords);
+//                System.out.println("subArea: " + subArea.toString());
+                long startTime = System.currentTimeMillis();
+                subResult = calcArea(subArea);
+                long finishTime = System.currentTimeMillis();
+//                System.out.println("subResult: " + subResult.toString());
+                calcTime = finishTime - startTime;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            System.out.println("order:" + this.order);
+//            System.out.println("calcTime:" + calcTime);
+//            System.out.println("call() is done");
+            return new CalcSubResult(this.order, subResult, calcTime, 0);
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public final class CalcSubResult {
+        int order;
+        int[] subResultArray;
+        long calcTime;
+        int iterations;
+    }
+
+    @Override
+    public List<InnerCoords> pickOutSubSetOfCoordinates(int order, int divider, List<InnerCoords> allCoords) {
+        int totalCoords = allCoords.size();
+        int coordsPerSubarea = Math.floorDiv(totalCoords, divider);
+        List<InnerCoords> subArea = new ArrayList<>();
+        int index = 0;
+        for (int i = 0; i < coordsPerSubarea; i++) {
+            index = i + (coordsPerSubarea * order);
+            subArea.add(allCoords.get(index));
+        }
+        return subArea;
     }
 }
