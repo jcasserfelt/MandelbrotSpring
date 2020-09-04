@@ -211,15 +211,16 @@ function setGlobalVariablesFromCalculationObject(inputCalculation) {
     global_divider = inputCalculation.calcParameters.divider;
 }
 
-function generateColorSpectrumArray(inputCalculation) {
-    var x = inputCalculation.calcParameters.inf_n;
+function generateColorSpectrumArray() {
+    var x = global_inf_n;
+    // var x = inputCalculation.calcParameters.inf_n;
     var y = 100;
-    var iterations = inputCalculation.calcParameters.inf_n;
+    var iterations = global_inf_n;
     document.getElementById("myCanvas").width = x;
     document.getElementById("myCanvas").height = y;
     // var coolArray = convertArray(inputCalculation);
-    var arraySize = inputCalculation.calcParameters.inf_n * 4 * y;
-    var resultArray = new Uint8ClampedArray(parseInt(arraySize));
+    var arraySize = global_inf_n * 4 * y;
+    var resultArray = new Uint8ClampedArray(arraySize);
 
     // var inputLength = Object.keys(inputCalculation.resultObj.resultData).length;
     // var resultArray = new Uint8ClampedArray(inputLength * 4);
@@ -241,7 +242,7 @@ function generateColorSpectrumArray(inputCalculation) {
             arg = increment * C;
             faktorR = ((0.5 * Math.sin(arg+(2*Math.PI)/10*6)) + 0.5)%255;
             faktorG = faktorR += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5);
-            faktorB = faktorG += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5);
+            faktorB = faktorG += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 2)) + 0.5);
 
             R = Math.round(255 * faktorR);
             G = Math.round(255 * faktorG);
@@ -266,12 +267,13 @@ function generateColorSpectrumArray(inputCalculation) {
 // inputCalculation.calcParameters.inf_n
 function drawSpectrumCanvas(inputCalculation) {
     // array = generateColorSpectrumArray(inputCalculation);
-    x = inputCalculation.calcParameters.inf_n;
+    x = global_inf_n;
+    // x = inputCalculation.calcParameters.inf_n;
     y = 100;
     document.getElementById("colour-spectrum-canvas").width = x;
     document.getElementById("colour-spectrum-canvas").height = y;
     // console.log(inputCalculation.resultObj.resultData);
-    var coolArray = generateColorSpectrumArray(inputCalculation);
+    var coolArray = generateColorSpectrumArray();
     var canvas = document.getElementById("colour-spectrum-canvas");
 
     var ctx = canvas.getContext("2d");

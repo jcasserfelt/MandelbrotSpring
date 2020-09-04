@@ -262,17 +262,17 @@ public class CalculationServiceImp implements CalculationService {
 //        CalcTask testTask = new CalcTask(1, p, allCoords);
 //        testTask.calcArea(allCoords);
 
-        List<List<InnerCoords>> tempList = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            tempList.add(pickOutSubSetOfCoordinates(i, 4, allCoords));
-        }
+//        List<List<InnerCoords>> tempList = new ArrayList<>();
+//        for (int i = 0; i < 4; i++) {
+//            tempList.add(pickOutSubSetOfCoordinates(i, 4, allCoords));
+//        }
 
         int coreCount = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(coreCount);
 
         List<CalcTask> calcTasks = new ArrayList<>();
         int calcTime = 0;
-        for (int i = 0; i < (p.getDivider()); i++) {
+        for (int i = 0; i < p.getDivider(); i++) {
             long startTimeTask = System.currentTimeMillis();
             CalcTask task = new CalcTask(i, p, allCoords);
 //            System.out.println("skapa CalcTask" + i + ": " + (System.currentTimeMillis() - startTimeTask));
@@ -281,9 +281,9 @@ public class CalculationServiceImp implements CalculationService {
         }
         try {
             long startTime = System.currentTimeMillis();
-            System.out.println("invoke all started");
+//            System.out.println("invoke all starts");
             List<Future<CalcSubResult>> futures = service.invokeAll(calcTasks);
-            System.out.println("invoke all: " + (System.currentTimeMillis() - startTime));
+//            System.out.println("invoke all: " + (System.currentTimeMillis() - startTime));
             long startTimeFuture = System.currentTimeMillis();
             for (Future<CalcSubResult> future : futures) {
 //                calcTime += future.get().calcTime;
@@ -295,7 +295,7 @@ public class CalculationServiceImp implements CalculationService {
                     resultArray[j + index] = future.get().subResultArray[j];
                 }
             }
-            System.out.println("sort out futures: " + (System.currentTimeMillis() - startTimeFuture));
+//            System.out.println("sort out futures: " + (System.currentTimeMillis() - startTimeFuture));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -303,7 +303,7 @@ public class CalculationServiceImp implements CalculationService {
         }
 
         calcTime = (int) (System.currentTimeMillis() - startTimeParallel);
-        System.out.println("calcTime varable: " + calcTime);
+//        System.out.println("calcTime varable: " + calcTime);
         // return new CalcResult(resultArray, calcTime, totalIterations);
         CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
         // Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
@@ -355,7 +355,6 @@ public class CalculationServiceImp implements CalculationService {
                     return i;
                 }
             }
-
             return iterations;
         }
 

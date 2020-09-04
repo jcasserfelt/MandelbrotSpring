@@ -36,13 +36,17 @@ final class CalcParametersController {
 //        List<Integer> resultInt = calculationService.calculateIntArea(calcParameters);
         long startTime = System.currentTimeMillis();
 
-        CalcResult calcResult =  calculationService.calculateIntArea(calcParameters);
+        CalcResult calcResult = calculationService.calculateIntArea(calcParameters);
         User user = new User(calcParameters.toString(), "enPassword");
         Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
         long calcTime = System.currentTimeMillis() - startTime;
-        System.out.println("hela testParams: " + calcTime);
-        System.out.println("------------------");
+        System.out.println();
+        System.out.println("single thread calc time: " + calcTime + "ms");
+//        System.out.println("------------------");
 //        calculation.getResultObj().calculationTime = calcTime;
+        for (int i = 0; i <(System.currentTimeMillis() - startTime) / 400 ; i++) {
+            System.out.print("-");
+        }
         return new ResponseEntity<>(calculation, HttpStatus.CREATED);
     }
 
@@ -53,8 +57,12 @@ final class CalcParametersController {
 //        User user = new User(calcParameters.toString(), "enPassword");
         long startTime = System.currentTimeMillis();
         Calculation calculation = calculationService.performParallelCalculation(calcParameters);
-        System.out.println("hela calcParallel: " + (System.currentTimeMillis() - startTime));
-        System.out.println("------------------");
+        System.out.println();
+        System.out.println(calcParameters.getDivider() + "x multi thread calc time: " + (System.currentTimeMillis() - startTime) + "ms");
+        for (int i = 0; i <(System.currentTimeMillis() - startTime) / 400 ; i++) {
+            System.out.print("-");
+        }
+//        System.out.println("------------------");
 
         return new ResponseEntity<>(calculation, HttpStatus.CREATED);
     }

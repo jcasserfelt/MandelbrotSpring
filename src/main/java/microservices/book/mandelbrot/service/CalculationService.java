@@ -49,7 +49,6 @@ public interface CalculationService {
 
     List<CalculationServiceImp.InnerCoords> pickOutSubSetOfCoordinates(int order, int divider, List<CalculationServiceImp.InnerCoords> allCoords);
 
-
 }
 
 
