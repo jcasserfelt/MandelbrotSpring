@@ -281,12 +281,12 @@ public class CalculationServiceImp implements CalculationService {
             long startTimeFuture = System.currentTimeMillis();
             for (Future<CalcSubResult> future : futures) {
 //                calcTime += future.get().calcTime;
-                int subResultLength = future.get().subResultArray.length;
-                int subResultOrder = future.get().order;
-                int index = (coordsPerSubArea * (future.get().order));
+                int subResultLength = future.get().getSubResultArray().length;
+                int subResultOrder = future.get().getOrder();
+                int index = (coordsPerSubArea * (future.get().getOrder()));
 
-                for (int j = 0; j < future.get().subResultArray.length; j++) {
-                    resultArray[j + index] = future.get().subResultArray[j];
+                for (int j = 0; j < future.get().getSubResultArray().length; j++) {
+                    resultArray[j + index] = future.get().getSubResultArray()[j];
                 }
             }
 //            System.out.println("sort out futures: " + (System.currentTimeMillis() - startTimeFuture));
@@ -376,16 +376,6 @@ public class CalculationServiceImp implements CalculationService {
         }
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public final class CalcSubResult {
-        int order;
-        int[] subResultArray;
-        long calcTime;
-        int iterations;
-    }
 
     @Override
     public List<Coordinate> pickOutSubSetOfCoordinates(int order, int divider, List<Coordinate> allCoords) {
