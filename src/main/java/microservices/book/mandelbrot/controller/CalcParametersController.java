@@ -34,8 +34,7 @@ final class CalcParametersController {
         long startTime = System.currentTimeMillis();
 
         CalcResult calcResult = calculationService.calculateIntArea(calcParameters);
-        User user = new User(calcParameters.toString(), "enPassword");
-        Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
+        Calculation calculation = new Calculation(calcParameters, calcResult, new Timestamp(new Date().getTime()));
         long calcTime = System.currentTimeMillis() - startTime;
         System.out.println();
         System.out.println("single thread calc time: " + calcTime + "ms");

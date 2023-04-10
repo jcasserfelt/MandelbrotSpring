@@ -286,7 +286,7 @@ public class CalculationServiceImp implements CalculationService {
         // return new CalcResult(resultArray, calcTime, totalIterations);
         CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
         // Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
-        return new Calculation(new User(), p, calcResult, new Timestamp(new Date().getTime()));
+        return new Calculation(p, calcResult, new Timestamp(new Date().getTime()));
     }
 
 
