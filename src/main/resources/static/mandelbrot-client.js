@@ -463,9 +463,8 @@ function clearLoadedCanvasView() {
 function getCalcFromDBbyIDLoad() {
     var id = $("#load-id").val();
     $.ajax({
-        url: '/mandelbrot/getCalculation',
-        type: 'POST',
-        data: JSON.stringify(id),
+        url: '/mandelbrot/getCalculation/' + id,
+        type: 'GET',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         async: false,
@@ -477,11 +476,9 @@ function getCalcFromDBbyIDLoad() {
 }
 
 function getCalcFromDBbyID(id) {
-    // var id = $("#load-id").val();
     $.ajax({
-        url: '/mandelbrot/getCalculation',
-        type: 'POST',
-        data: JSON.stringify(id),
+        url: '/mandelbrot/getCalculation/' + id,
+        type: 'GET',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         async: false,
@@ -521,7 +518,7 @@ function updateCalcDetailsTable(calculation) {
 function updateCalcList() {
     $.ajax({
         url: '/mandelbrot/getAllCalculationLight',
-        type: 'POST',
+        type: 'GET',
         // data: JSON.stringify(),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
