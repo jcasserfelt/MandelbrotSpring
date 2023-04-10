@@ -19,31 +19,15 @@ public final class CalcResult {
     @Column(name = "CALCRESULT_ID")
     private Long id;
 
-
-    //    @CollectionTable(name="listOfUsers")
-//    @Column(columnDefinition = "org.hibernate.type.BlobType")
-
-    //    @Type(type = "org.hibernate.type.BlobType")
     public final int[] resultData;
-
     public final long calculationTime;
     public final long totalIterations;
 
-
-    //    public CalcResult(){
-//        this(resultData = null, calculationTime = null, totalIterations = null);
-//    }
+    // these constructor annotations..
     public CalcResult() {
-        resultData = new int[10000];
+        resultData = new int[10];
         calculationTime = 0l;
         totalIterations = 0l;
     }
-
-//    public CalcResult(int[] resultData, long calculationTime, long totalIterations) {
-//        this.resultData = resultData;
-//        this.calculationTime = calculationTime;
-//        this.totalIterations = totalIterations;
-//    }
-
 
 }

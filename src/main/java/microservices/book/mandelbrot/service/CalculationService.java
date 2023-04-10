@@ -14,14 +14,12 @@ public interface CalculationService {
      * the kind-of recursive function to reach and abs
      * value greater than 2.
      */
-//    int calculatePoint(double x, double y, int iterations);
 
     byte calculatePoint(double x, double y, int iterations);
 
-
     int calculateIntPoint(double x, double y, int iterations);
 
-    void convertToRGBA(CalcResult calcResult);
+    void convertToRGBA(CalcResult calcResult); // todo probably remove
 
     /**
      * @param parameters object containing boundary values needed

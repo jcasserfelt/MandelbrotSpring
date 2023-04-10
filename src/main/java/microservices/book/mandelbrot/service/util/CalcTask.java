@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class CalcTask  implements Callable<CalcSubResult> {
+public class CalcTask implements Callable<CalcSubResult> {
 
     int order;
     CalcParameters parameters;
@@ -40,14 +40,13 @@ public class CalcTask  implements Callable<CalcSubResult> {
         double cx = x;
         double cy = y;
 
-        int i = 0; // remove
+        int i = 0; // remove // todo take a look
         for (i = 1; i <= iterations; i++) {
             double nx = x * x - y * y + cx;
             double ny = 2 * x * y + cy;
             x = nx;
             y = ny;
 
-//            double resultValue = x * x + y * y;
             if (x * x + y * y > 2) {
                 return i;
             }
@@ -68,25 +67,19 @@ public class CalcTask  implements Callable<CalcSubResult> {
     }
 
     @Override
-    public CalcSubResult call() throws Exception {
-        int testApa = 20;
+    public CalcSubResult call() {
         int[] subResult = new int[0];
         long calcTime = 0;
         try {
-//                System.out.println("inside callable");
             List<Coordinate> subArea = pickOutSubSetOfCoordinates(this.order, parameters.getDivider(), allCoords);
-//                System.out.println("subArea: " + subArea.toString());
             long startTime = System.currentTimeMillis();
             subResult = calcArea(subArea);
             long finishTime = System.currentTimeMillis();
-//                System.out.println("subResult: " + subResult.toString());
             calcTime = finishTime - startTime;
         } catch (Exception e) {
             e.printStackTrace();
         }
-//            System.out.println("order:" + this.order);
-//            System.out.println("calcTime:" + calcTime);
-//            System.out.println("call() is done");
+
         return new CalcSubResult(this.order, subResult, calcTime, 0);
     }
 }

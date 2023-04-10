@@ -1,6 +1,5 @@
 package microservices.book.mandelbrot.service;
 
-import lombok.*;
 import microservices.book.mandelbrot.domain.*;
 import microservices.book.mandelbrot.repository.CalculationRepository;
 import microservices.book.mandelbrot.service.util.CalcTask;
@@ -19,11 +18,9 @@ public class CalculationServiceImp implements CalculationService {
 
     private CalculationRepository calculationRepository;
 
-
     @Autowired
     public CalculationServiceImp(CalculationRepository calculationRepository) {
         this.calculationRepository = calculationRepository;
-
     }
 
     @Override
@@ -38,36 +35,19 @@ public class CalculationServiceImp implements CalculationService {
             x = nx;
             y = ny;
 
-//            double resultValue = x * x + y * y;
             if (x * x + y * y > 2) {
                 return i;
             }
         }
-        // remove
-//        if (i == iterations) {
-//            return iterations;
-//        }
         return iterations;
     }
 
     @Override
     public CalcResult calculateIntArea(CalcParameters parameters) {
-
-
-//        for (int i = 0; i < 10; i++) {
-//            long startTimeMakeCoords = System.currentTimeMillis();
-//            List<InnerCoords> coordinates = makeCoordinates(parameters);
-//            long endTimeMakeCoords = System.currentTimeMillis();
-//            long timeCoords = endTimeMakeCoords - startTimeMakeCoords;
-//
-//            System.out.println(i + ": " + timeCoords);
-//        }
-//        System.out.println("-------------");
         List<Coordinate> coordinates = makeCoordinates(parameters);
-        long totalIterations = 0;
         int[] resultArray = new int[coordinates.size()];
-//        List<Integer> resultList = new ArrayList<>();
 
+        long totalIterations = 0;
         int counter = 0;
         long startTime = System.currentTimeMillis();
         try {
@@ -75,7 +55,6 @@ public class CalculationServiceImp implements CalculationService {
                 int temp = calculateIntPoint(tempCoordinate.getXVal(), tempCoordinate.getYVal(), parameters.getInf_n());
 
                 resultArray[counter] = temp;
-//                resultList.add(temp);
                 totalIterations += temp;
                 counter++;
             }
@@ -83,16 +62,18 @@ public class CalculationServiceImp implements CalculationService {
             System.out.println("Index vid outofbounce: " + counter);
             e.printStackTrace();
         }
+
         long finishTime = System.currentTimeMillis();
         long calcTime = finishTime - startTime;
         return new CalcResult(resultArray, calcTime, totalIterations);
     }
 
+    // todo remove
     @Override
     public void convertToRGBA(CalcResult calcResult) {
-
     }
 
+    // todo change name, byte something
     @Override
     public byte calculatePoint(double x, double y, int iterations) {
         double cx = x;
@@ -105,42 +86,36 @@ public class CalculationServiceImp implements CalculationService {
             x = nx;
             y = ny;
 
-//            double resultValue = x * x + y * y;
             if (x * x + y * y > 2) {
                 return (byte) i;
             }
         }
-        if (i == iterations) {
-            return (byte) iterations;
-        }
+
         return (byte) iterations;
     }
 
+    // todo change name, byte something
     @Override
     public List<Byte> calculateArea(CalcParameters parameters) {
-        // list med inner cords
-        // skapa inner coords mha makeCoords()
         List<Coordinate> coordinates = makeCoordinates(parameters);
         List<Byte> resultList = new ArrayList<>();
 
-        // använd calculatesubarea(inner coords lista)
         int counter = 0;
         try {
             for (Coordinate tempCoordinate : coordinates) {
                 byte temp = calculatePoint(tempCoordinate.getXVal(), tempCoordinate.getYVal(), parameters.getInf_n());
                 resultList.add(temp);
-//                subResultArray[counter] = this.convertToPGMRangeByte(calculatePoint2(tempCoordinate.x, tempCoordinate.y, inf_n), inf_n);
-//                subResultArray[counter] = this.convertToPGMRangeByte(temp, inf_n);
                 counter++;
             }
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Index vid outofbounce: " + counter);
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return resultList;
     }
-
 
     @Override
     public List<Coordinate> makeCoordinates(CalcParameters p) {
@@ -158,7 +133,6 @@ public class CalculationServiceImp implements CalculationService {
 
         int x = p.getX();
         int y = p.getY();
-
 
         // create x*y coordinates
         for (int i = 0; i < y; i++) {
@@ -185,7 +159,6 @@ public class CalculationServiceImp implements CalculationService {
 
     @Override
     public Calculation getCalculationById(Long id) {
-//        Iterable<Calculation> lista = calculationRepository.findAll();
         Calculation result = calculationRepository.findFirstById(id).get();
         return result;
     }
@@ -200,7 +173,6 @@ public class CalculationServiceImp implements CalculationService {
 
     @Override
     public List<CalculationsRepresentation> getAllCalculationsRepresentations() {
-        Iterable<Calculation> resultList = calculationRepository.findAll();
         List<CalculationsRepresentation> calculationsRepresentations = new ArrayList<>();
         for (Calculation c : calculationRepository.findAll()) {
             calculationsRepresentations.add(new CalculationsRepresentation(c));
@@ -208,26 +180,8 @@ public class CalculationServiceImp implements CalculationService {
         return calculationsRepresentations;
     }
 
-//    @Getter
-//    @Setter
-//    public final class CalculationsRepresentation {
-//        Long id;
-//        User user;
-//        CalcParameters calcParameters;
-//        int[] resultData;
-//        Timestamp timestamp;
-//
-//
-//        public CalculationsRepresentation(Calculation calculation) {
-//            this.id = calculation.getId();
-//            this.user = calculation.getUser();
-//            this.calcParameters = calculation.getCalcParameters();
-//            this.resultData = null;
-//            this.timestamp = calculation.getTimestamp();
-//        }
-//    }
 
-
+    // todo keep track of calc time for each subArea
     @Override
     public Calculation performParallelCalculation(CalcParameters p) {
         long startTimeParallel = System.currentTimeMillis();
@@ -237,56 +191,29 @@ public class CalculationServiceImp implements CalculationService {
         int coordsPerSubArea = Math.floorDiv(amountOfCoordinates, p.getDivider());
         List<Coordinate> allCoords = makeCoordinates(p);
 
-        // testning av metod
-//        List<InnerCoords> subArea = pickOutSubSetOfCoordinates(1, p.getDivider(), allCoords);
-//        CalcTask testTask = new CalcTask(1, p, allCoords);
-//        testTask.calcArea(allCoords);
-
-//        List<List<InnerCoords>> tempList = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            tempList.add(pickOutSubSetOfCoordinates(i, 4, allCoords));
-//        }
-
         int coreCount = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(coreCount);
 
         List<CalcTask> calcTasks = new ArrayList<>();
         int calcTime = 0;
         for (int i = 0; i < p.getDivider(); i++) {
-            long startTimeTask = System.currentTimeMillis();
             CalcTask task = new CalcTask(i, p, allCoords);
-//            System.out.println("skapa CalcTask" + i + ": " + (System.currentTimeMillis() - startTimeTask));
-//            Future<CalcSubResult> future = service.submit(task);
             calcTasks.add(task);
         }
         try {
-            long startTime = System.currentTimeMillis();
-//            System.out.println("invoke all starts");
             List<Future<CalcSubResult>> futures = service.invokeAll(calcTasks);
-//            System.out.println("invoke all: " + (System.currentTimeMillis() - startTime));
-            long startTimeFuture = System.currentTimeMillis();
             for (Future<CalcSubResult> future : futures) {
-//                calcTime += future.get().calcTime;
-                int subResultLength = future.get().getSubResultArray().length;
-                int subResultOrder = future.get().getOrder();
                 int index = (coordsPerSubArea * (future.get().getOrder()));
-
                 for (int j = 0; j < future.get().getSubResultArray().length; j++) {
                     resultArray[j + index] = future.get().getSubResultArray()[j];
                 }
             }
-//            System.out.println("sort out futures: " + (System.currentTimeMillis() - startTimeFuture));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         calcTime = (int) (System.currentTimeMillis() - startTimeParallel);
-//        System.out.println("calcTime varable: " + calcTime);
-        // return new CalcResult(resultArray, calcTime, totalIterations);
         CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
-        // Calculation calculation = new Calculation(user, calcParameters, calcResult, new Timestamp(new Date().getTime()));
         return new Calculation(p, calcResult, new Timestamp(new Date().getTime()));
     }
 }

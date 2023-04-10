@@ -25,6 +25,7 @@ public final class CalcParameters {
     private final int inf_n;                    // iteration limit
     private final int divider;                  // number of height and width divisions of total area
 
+    // these constructor annotations..
     public CalcParameters() {
         this(0f, 0f, 0f, 0f, 0, 0, 0, 0);
     }
