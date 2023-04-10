@@ -44,8 +44,6 @@ public interface CalculationService {
 
     Calculation performParallelCalculation(CalcParameters parameters);
 
-    List<Coordinate> pickOutSubSetOfCoordinates(int order, int divider, List<Coordinate> allCoords);
-
 }
 
 
