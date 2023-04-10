@@ -1,10 +1,7 @@
 package microservices.book.mandelbrot.controller;
 
 
-import microservices.book.mandelbrot.domain.CalcParameters;
-import microservices.book.mandelbrot.domain.CalcResult;
-import microservices.book.mandelbrot.domain.Calculation;
-import microservices.book.mandelbrot.domain.User;
+import microservices.book.mandelbrot.domain.*;
 import microservices.book.mandelbrot.service.CalculationService;
 import microservices.book.mandelbrot.service.CalculationServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +77,9 @@ final class CalcParametersController {
     }
 
     @PostMapping("/getAllCalculationLight")
-    ResponseEntity<List<CalculationServiceImp.CalculationsRepresentation>> getAllCalculations() {
+    ResponseEntity<List<CalculationsRepresentation>> getAllCalculations() {
 
-        List<CalculationServiceImp.CalculationsRepresentation> getAllCalculationsRepresentations =
+        List<CalculationsRepresentation> getAllCalculationsRepresentations =
                 calculationService.getAllCalculationsRepresentations();
 
         return new ResponseEntity<>(getAllCalculationsRepresentations, HttpStatus.CREATED);

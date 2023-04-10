@@ -207,39 +207,24 @@ public class CalculationServiceImp implements CalculationService {
         return calculationsRepresentations;
     }
 
-//    @ToString
 //    @Getter
-//    public final class Coordinate {
+//    @Setter
+//    public final class CalculationsRepresentation {
+//        Long id;
+//        User user;
+//        CalcParameters calcParameters;
+//        int[] resultData;
+//        Timestamp timestamp;
 //
-//        double xVal;
-//        double yVal;
 //
-//        public Coordinate(double xVal, double yVal) {
-//            this.xVal = xVal;
-//            this.yVal = yVal;
+//        public CalculationsRepresentation(Calculation calculation) {
+//            this.id = calculation.getId();
+//            this.user = calculation.getUser();
+//            this.calcParameters = calculation.getCalcParameters();
+//            this.resultData = null;
+//            this.timestamp = calculation.getTimestamp();
 //        }
-//
-//
 //    }
-
-    @Getter
-    @Setter
-    public final class CalculationsRepresentation {
-        Long id;
-        User user;
-        CalcParameters calcParameters;
-        int[] resultData;
-        Timestamp timestamp;
-
-
-        public CalculationsRepresentation(Calculation calculation) {
-            this.id = calculation.getId();
-            this.user = calculation.getUser();
-            this.calcParameters = calculation.getCalcParameters();
-            this.resultData = null;
-            this.timestamp = calculation.getTimestamp();
-        }
-    }
 
 
     @Override
