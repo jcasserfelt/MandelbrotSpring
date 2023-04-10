@@ -3,6 +3,7 @@ package microservices.book.mandelbrot.service;
 import microservices.book.mandelbrot.domain.CalcParameters;
 import microservices.book.mandelbrot.domain.CalcResult;
 import microservices.book.mandelbrot.domain.Calculation;
+import microservices.book.mandelbrot.domain.Coordinate;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface CalculationService {
 
     CalcResult calculateIntArea(CalcParameters parameters);
 
-    List<CalculationServiceImp.InnerCoords> makeCoordinates(CalcParameters parameters);
+    List<Coordinate> makeCoordinates(CalcParameters parameters);
 
     String saveCalculationToDatabase(Calculation calculation);
 
@@ -47,7 +48,7 @@ public interface CalculationService {
 
     Calculation performParallelCalculation(CalcParameters parameters);
 
-    List<CalculationServiceImp.InnerCoords> pickOutSubSetOfCoordinates(int order, int divider, List<CalculationServiceImp.InnerCoords> allCoords);
+    List<Coordinate> pickOutSubSetOfCoordinates(int order, int divider, List<Coordinate> allCoords);
 
 }
 

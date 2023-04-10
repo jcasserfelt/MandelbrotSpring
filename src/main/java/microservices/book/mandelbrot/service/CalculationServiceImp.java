@@ -1,11 +1,7 @@
 package microservices.book.mandelbrot.service;
 
-import javassist.runtime.Inner;
 import lombok.*;
-import microservices.book.mandelbrot.domain.CalcParameters;
-import microservices.book.mandelbrot.domain.CalcResult;
-import microservices.book.mandelbrot.domain.Calculation;
-import microservices.book.mandelbrot.domain.User;
+import microservices.book.mandelbrot.domain.*;
 import microservices.book.mandelbrot.repository.CalculationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,7 +62,7 @@ public class CalculationServiceImp implements CalculationService {
 //            System.out.println(i + ": " + timeCoords);
 //        }
 //        System.out.println("-------------");
-        List<InnerCoords> coordinates = makeCoordinates(parameters);
+        List<Coordinate> coordinates = makeCoordinates(parameters);
         long totalIterations = 0;
         int[] resultArray = new int[coordinates.size()];
 //        List<Integer> resultList = new ArrayList<>();
@@ -74,8 +70,8 @@ public class CalculationServiceImp implements CalculationService {
         int counter = 0;
         long startTime = System.currentTimeMillis();
         try {
-            for (InnerCoords tempCoordinate : coordinates) {
-                int temp = calculateIntPoint(tempCoordinate.xVal, tempCoordinate.yVal, parameters.getInf_n());
+            for (Coordinate tempCoordinate : coordinates) {
+                int temp = calculateIntPoint(tempCoordinate.getXVal(), tempCoordinate.getYVal(), parameters.getInf_n());
 
                 resultArray[counter] = temp;
 //                resultList.add(temp);
@@ -123,14 +119,14 @@ public class CalculationServiceImp implements CalculationService {
     public List<Byte> calculateArea(CalcParameters parameters) {
         // list med inner cords
         // skapa inner coords mha makeCoords()
-        List<InnerCoords> coordinates = makeCoordinates(parameters);
+        List<Coordinate> coordinates = makeCoordinates(parameters);
         List<Byte> resultList = new ArrayList<>();
 
         // använd calculatesubarea(inner coords lista)
         int counter = 0;
         try {
-            for (InnerCoords tempCoordinate : coordinates) {
-                byte temp = calculatePoint(tempCoordinate.xVal, tempCoordinate.yVal, parameters.getInf_n());
+            for (Coordinate tempCoordinate : coordinates) {
+                byte temp = calculatePoint(tempCoordinate.getXVal(), tempCoordinate.getYVal(), parameters.getInf_n());
                 resultList.add(temp);
 //                subResultArray[counter] = this.convertToPGMRangeByte(calculatePoint2(tempCoordinate.x, tempCoordinate.y, inf_n), inf_n);
 //                subResultArray[counter] = this.convertToPGMRangeByte(temp, inf_n);
@@ -146,9 +142,9 @@ public class CalculationServiceImp implements CalculationService {
 
 
     @Override
-    public List<InnerCoords> makeCoordinates(CalcParameters p) {
+    public List<Coordinate> makeCoordinates(CalcParameters p) {
 
-        ArrayList<InnerCoords> coordinates = new ArrayList<>();
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
 
         double xInterval = Math.abs(p.getMax_c_re() - p.getMin_c_re());
         double yInterval = Math.abs(p.getMax_c_im() - p.getMin_c_im());
@@ -171,7 +167,7 @@ public class CalculationServiceImp implements CalculationService {
             }
             tempX = p.getMin_c_re();           // restart x value for the next row
             for (int j = 0; j < x; j++) {
-                coordinates.add(new InnerCoords(tempX, tempY));
+                coordinates.add(new Coordinate(tempX, tempY));
                 xAdd = (xInterval / (y - 1));
                 tempX = tempX + xAdd;
             }
@@ -211,22 +207,20 @@ public class CalculationServiceImp implements CalculationService {
         return calculationsRepresentations;
     }
 
-    @ToString
-    @Getter
-    public final class InnerCoords {
-
-        double xVal;
-        double yVal;
-
-//        BigDecimal
-
-        public InnerCoords(double xVal, double yVal) {
-            this.xVal = xVal;
-            this.yVal = yVal;
-        }
-
-
-    }
+//    @ToString
+//    @Getter
+//    public final class Coordinate {
+//
+//        double xVal;
+//        double yVal;
+//
+//        public Coordinate(double xVal, double yVal) {
+//            this.xVal = xVal;
+//            this.yVal = yVal;
+//        }
+//
+//
+//    }
 
     @Getter
     @Setter
@@ -255,7 +249,7 @@ public class CalculationServiceImp implements CalculationService {
         int amountOfCoordinates = p.getX() * p.getY();
         int[] resultArray = new int[amountOfCoordinates];
         int coordsPerSubArea = Math.floorDiv(amountOfCoordinates, p.getDivider());
-        List<InnerCoords> allCoords = makeCoordinates(p);
+        List<Coordinate> allCoords = makeCoordinates(p);
 
         // testning av metod
 //        List<InnerCoords> subArea = pickOutSubSetOfCoordinates(1, p.getDivider(), allCoords);
@@ -315,23 +309,23 @@ public class CalculationServiceImp implements CalculationService {
 
         int order;
         CalcParameters parameters;
-        List<InnerCoords> allCoords;
+        List<Coordinate> allCoords;
 
-        public CalcTask(int order, CalcParameters parameters, List<InnerCoords> allCoords) {
+        public CalcTask(int order, CalcParameters parameters, List<Coordinate> allCoords) {
 
             this.order = order;
             this.parameters = parameters;
             this.allCoords = allCoords;
         }
 
-        public int[] calcArea(List<InnerCoords> coords) {
+        public int[] calcArea(List<Coordinate> coords) {
             int[] resultArray = new int[coords.size()];
 
             int counter = 0;
             int tempResult = 0;
             int totalIterations = 0;
-            for (InnerCoords c : coords) {
-                tempResult = calculateIntPoint(c.xVal, c.yVal, this.parameters.getInf_n());
+            for (Coordinate c : coords) {
+                tempResult = calculateIntPoint(c.getXVal(), c.getYVal(), this.parameters.getInf_n());
                 resultArray[counter] = tempResult;
                 totalIterations += tempResult;
                 counter++;
@@ -365,7 +359,7 @@ public class CalculationServiceImp implements CalculationService {
             long calcTime = 0;
             try {
 //                System.out.println("inside callable");
-                List<InnerCoords> subArea = pickOutSubSetOfCoordinates(this.order, parameters.getDivider(), allCoords);
+                List<Coordinate> subArea = pickOutSubSetOfCoordinates(this.order, parameters.getDivider(), allCoords);
 //                System.out.println("subArea: " + subArea.toString());
                 long startTime = System.currentTimeMillis();
                 subResult = calcArea(subArea);
@@ -394,10 +388,10 @@ public class CalculationServiceImp implements CalculationService {
     }
 
     @Override
-    public List<InnerCoords> pickOutSubSetOfCoordinates(int order, int divider, List<InnerCoords> allCoords) {
+    public List<Coordinate> pickOutSubSetOfCoordinates(int order, int divider, List<Coordinate> allCoords) {
         int totalCoords = allCoords.size();
         int coordsPerSubarea = Math.floorDiv(totalCoords, divider);
-        List<InnerCoords> subArea = new ArrayList<>();
+        List<Coordinate> subArea = new ArrayList<>();
         int index = 0;
         for (int i = 0; i < coordsPerSubarea; i++) {
             index = i + (coordsPerSubarea * order);
