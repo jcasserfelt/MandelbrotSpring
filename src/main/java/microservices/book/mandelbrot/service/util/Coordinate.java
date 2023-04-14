@@ -1,4 +1,4 @@
-package microservices.book.mandelbrot.domain;
+package microservices.book.mandelbrot.service.util;
 
 import lombok.Getter;
 import lombok.ToString;

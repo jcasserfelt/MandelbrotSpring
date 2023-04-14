@@ -1,8 +1,6 @@
 package microservices.book.mandelbrot.service.util;
 
 import microservices.book.mandelbrot.domain.CalcParameters;
-import microservices.book.mandelbrot.domain.CalcSubResult;
-import microservices.book.mandelbrot.domain.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;

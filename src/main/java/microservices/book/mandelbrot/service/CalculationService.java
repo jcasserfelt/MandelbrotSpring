@@ -1,6 +1,8 @@
 package microservices.book.mandelbrot.service;
 
 import microservices.book.mandelbrot.domain.*;
+import microservices.book.mandelbrot.service.util.Coordinate;
+
 import java.util.List;
 
 public interface CalculationService {

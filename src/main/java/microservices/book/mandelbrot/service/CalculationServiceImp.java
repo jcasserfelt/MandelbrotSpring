@@ -2,7 +2,9 @@ package microservices.book.mandelbrot.service;
 
 import microservices.book.mandelbrot.domain.*;
 import microservices.book.mandelbrot.repository.CalculationRepository;
+import microservices.book.mandelbrot.service.util.CalcSubResult;
 import microservices.book.mandelbrot.service.util.CalcTask;
+import microservices.book.mandelbrot.service.util.Coordinate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,8 @@ public class CalculationServiceImp implements CalculationService {
         double cx = x;
         double cy = y;
 
-        int i = 0; // remove
-        for (i = 1; i <= iterations; i++) {
+        // (x + yi)^2 = x^2 + 2*x*y*i - y^2 => Zr = x*x + y*y, Zi = 2*x*y
+        for (int i = 1; i <= iterations; i++) {
             double nx = x * x - y * y + cx;
             double ny = 2 * x * y + cy;
             x = nx;
@@ -194,7 +196,7 @@ public class CalculationServiceImp implements CalculationService {
         int coreCount = Runtime.getRuntime().availableProcessors();
         ExecutorService service = Executors.newFixedThreadPool(coreCount);
 
-        List<CalcTask> calcTasks = new ArrayList<>();
+        List<CalcTask> calcTasks = new ArrayList<>(p.getDivider());
         int calcTime = 0;
         for (int i = 0; i < p.getDivider(); i++) {
             CalcTask task = new CalcTask(i, p, allCoords);

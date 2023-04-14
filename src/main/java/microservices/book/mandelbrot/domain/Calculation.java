@@ -1,11 +1,9 @@
 package microservices.book.mandelbrot.domain;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-// @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -36,7 +34,4 @@ public final class Calculation {
         timestamp = null;
     }
 
-    public void resetResultdata() {
-        return;
-    }
 }
