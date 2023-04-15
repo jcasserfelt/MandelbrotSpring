@@ -26,6 +26,25 @@ public final class CalcUtils {
         return iterations;
     }
 
+
+    public static int calculateJuliaPoint(double x, double y, int iterations){
+        // hard coded for values for the famous "seahorse" fractal
+        double cx = -0.7;
+        double cy = 0.27015;
+
+        for (int i = 1; i <= iterations; i++) {
+            double nx = x * x - y * y + cx;
+            double ny = 2 * x * y + cy;
+            x = nx;
+            y = ny;
+
+            if (x * x + y * y > 4) { // the escape condition is different for the Julia set
+                return i;
+            }
+        }
+        return iterations;
+    }
+
     public static CalcResult calculateIntArea(CalcParameters parameters) {
         List<Coordinate> coordinates = makeCoordinates(parameters);
         int[] resultArray = new int[coordinates.size()];
@@ -59,6 +78,7 @@ public final class CalcUtils {
         int totalIterations = 0;
         for (Coordinate c : coords) {
             tempResult = CalcUtils.calculateIntPoint(c.getXVal(), c.getYVal(), maxIterations);
+//            tempResult = CalcUtils.calculateJuliaPoint(c.getXVal(), c.getYVal(), maxIterations);
             resultArray[counter] = tempResult;
             totalIterations += tempResult;
             counter++;
