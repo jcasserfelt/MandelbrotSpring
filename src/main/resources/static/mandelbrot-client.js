@@ -85,7 +85,7 @@ function goSomeWhere(input, newOrOld) {
     var urlString = '';
     if (newOrOld === "old") {
         urlString = '/fractal/test';
-    } else urlString = '/fractal/calcParallel';
+    } else urlString = '/fractal/calcMandelbrot';
 
     $.ajax({
         url: urlString,
@@ -140,7 +140,7 @@ function sendParameters() {
     };
 
     $.ajax({
-        url: '/fractal/calcParallel',
+        url: '/fractal/calcMandelbrot',
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -420,7 +420,7 @@ function convertArray(inputCalculation) { //inputarray
 
         arg = increment * C;
         faktorR = (0.5 * Math.sin(arg)) + 0.5
-        faktorG = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.2;
+        faktorG = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5;
         faktorB = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 2)) + 0.5;
 
 
