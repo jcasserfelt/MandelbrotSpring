@@ -84,8 +84,8 @@ function goSomeWhere(input, newOrOld) {
 
     var urlString = '';
     if(newOrOld === "old"){
-        urlString = '/mandelbrot/test';
-    } else urlString = '/mandelbrot/calcParallel';
+        urlString = '/fractal/test';
+    } else urlString = '/fractal/calcParallel';
 
     $.ajax({
         url: urlString,
@@ -140,7 +140,7 @@ function sendParameters() {
     };
 
     $.ajax({
-        url: '/mandelbrot/calcParallel',
+        url: '/fractal/calcParallel',
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -180,7 +180,7 @@ function sendParametersOld() {
     };
 
     $.ajax({
-        url: '/mandelbrot/test',
+        url: '/fractal/test',
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -437,7 +437,7 @@ function saveCalculation() {
     };
 
     $.ajax({
-        url: '/mandelbrot/save',
+        url: '/fractal/save',
         type: 'POST',
         data: JSON.stringify(currentCalculation),
         contentType: "application/json; charset=utf-8",
@@ -463,7 +463,7 @@ function clearLoadedCanvasView() {
 function getCalcFromDBbyIDLoad() {
     var id = $("#load-id").val();
     $.ajax({
-        url: '/mandelbrot/getCalculation/' + id,
+        url: '/fractal/getCalculation/' + id,
         type: 'GET',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -477,7 +477,7 @@ function getCalcFromDBbyIDLoad() {
 
 function getCalcFromDBbyID(id) {
     $.ajax({
-        url: '/mandelbrot/getCalculation/' + id,
+        url: '/fractal/getCalculation/' + id,
         type: 'GET',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -517,7 +517,7 @@ function updateCalcDetailsTable(calculation) {
 
 function updateCalcList() {
     $.ajax({
-        url: '/mandelbrot/getAllCalculationLight',
+        url: '/fractal/getAllCalculationLight',
         type: 'GET',
         // data: JSON.stringify(),
         contentType: "application/json; charset=utf-8",
