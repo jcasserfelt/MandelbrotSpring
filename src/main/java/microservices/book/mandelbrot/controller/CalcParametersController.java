@@ -49,11 +49,11 @@ final class CalcParametersController {
         return new ResponseEntity<>(getAllCalculationsRepresentations, HttpStatus.OK);
     }
 
-    @PostMapping("/test")
-    ResponseEntity<Calculation> testParams(@RequestBody CalcParameters calcParameters) {
-        CalcResult calcResult = calculationService.calculateIntArea(calcParameters);
-        Calculation calculation = new Calculation(calcParameters, calcResult, new Timestamp(new Date().getTime()));
-        return new ResponseEntity<>(calculation, HttpStatus.CREATED);
-    }
+//    @PostMapping("/test")
+//    ResponseEntity<Calculation> testParams(@RequestBody CalcParameters calcParameters) {
+//        CalcResult calcResult = calculationService.calculateIntArea(calcParameters);
+//        Calculation calculation = new Calculation(calcParameters, calcResult, new Timestamp(new Date().getTime()));
+//        return new ResponseEntity<>(calculation, HttpStatus.CREATED);
+//    }
 
 }
