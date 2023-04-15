@@ -83,7 +83,7 @@ function goSomeWhere(input, newOrOld) {
     };
 
     var urlString = '';
-    if(newOrOld === "old"){
+    if (newOrOld === "old") {
         urlString = '/fractal/test';
     } else urlString = '/fractal/calcParallel';
 
@@ -240,7 +240,7 @@ function generateColorSpectrumArray() {
         for (var j = 0; j < iterations * 4; j += 4) {
             C = counter;
             arg = increment * C;
-            faktorR = ((0.5 * Math.sin(arg+(2*Math.PI)/10*6)) + 0.5)%255;
+            faktorR = ((0.5 * Math.sin(arg + (2 * Math.PI) / 10 * 6)) + 0.5) % 255;
             faktorG = faktorR += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5);
             faktorB = faktorG += ((0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 2)) + 0.5);
 
@@ -317,53 +317,83 @@ function drawCanvas(inputCalculation) {
     y = $("#y").val();
     document.getElementById("myCanvas").height = y;
     document.getElementById("myCanvas").width = x;
-    console.log(inputCalculation.resultObj.resultData);
+    //    console.log(inputCalculation.resultObj.resultData);
     var coolArray = convertArray(inputCalculation);
     var canvas = document.getElementById("myCanvas");
 
     var ctx = canvas.getContext("2d");
     var enNyImageData = ctx.createImageData(x, y);
-    enNyImageData.data = coolArray;
+    enNyImageData.data = coolArray; // todo remove?
 
     for (var i = 0; i < coolArray.length; i++) {
         enNyImageData.data[i] = coolArray[i];
     }
-    console.log(coolArray);
+    //    console.log(coolArray);
     ctx.putImageData(enNyImageData, 0, 0);
     updateCalcDetailsTable(inputCalculation);
 }
 
-function convertArray2(inputarray) { //100
+// function convertArray2(inputarray) { //100
 
-    var C;
-    var R;
-    var G;
-    var B;
+//     var C;
+//     var R;
+//     var G;
+//     var B;
 
-    var inputLength = Object.keys(inputarray).length;
+//     var inputLength = Object.keys(inputarray).length;
+//     var resultArray = new Uint8ClampedArray(inputLength * 4);
+
+//     var counter = 0;
+//     for (var i = 0; i < resultArray.length; i += 4) {
+//         C = inputarray[counter];
+
+//         C = C * global_divider;
+//         //
+//         // R = (C / (256 ^ 2)) % 256;
+//         // G = (C / 256) % 256;
+//         // B = C % 256;
+
+//         B = C & 255;
+//         G = (C >> 8) & 255;
+//         R = (C >> 16) & 255;
+
+//         resultArray[i + 0] = R;   //R
+//         resultArray[i + 1] = G;   //G
+//         resultArray[i + 2] = B;   //B
+//         resultArray[i + 3] = 255; //A
+//         counter++;
+//     }
+//     return resultArray;
+// }
+
+function convertArray_failArmy(inputCalculation) {
+    setGlobalVariablesFromCalculationObject(inputCalculation);
+
+    var inputLength = Object.keys(inputCalculation.resultObj.resultData).length;
     var resultArray = new Uint8ClampedArray(inputLength * 4);
-
     var counter = 0;
+
     for (var i = 0; i < resultArray.length; i += 4) {
-        C = inputarray[counter];
+        const currentValue = inputCalculation.resultObj.resultData[counter];
 
-        C = C * global_divider;
-        //
-        // R = (C / (256 ^ 2)) % 256;
-        // G = (C / 256) % 256;
-        // B = C % 256;
+        // Calculate a percentage value based on the current integer value
+        const percentage = currentValue / global_inf_n;
 
-        B = C & 255;
-        G = (C >> 8) & 255;
-        R = (C >> 16) & 255;
+        // Calculate the RGB values based on the percentage
+        const red = Math.floor(Math.sin(percentage * Math.PI / 2) * 255);
+        const green = Math.floor(Math.sin(percentage * Math.PI / 2 + Math.PI / 2) * 255);
+        const blue = Math.floor(Math.sin(percentage * Math.PI / 2 + Math.PI) * 255);
 
-        resultArray[i + 0] = R;   //R
-        resultArray[i + 1] = G;   //G
-        resultArray[i + 2] = B;   //B
-        resultArray[i + 3] = 255; //A
+        resultArray[i + 0] = red;       //R
+        resultArray[i + 1] = green;     //G
+        resultArray[i + 2] = blue;      //B
+        resultArray[i + 3] = 255;       //A
+
         counter++;
     }
-    return resultArray;
+
+    return resultArray
+
 }
 
 function convertArray(inputCalculation) { //inputarray
