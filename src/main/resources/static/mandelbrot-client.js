@@ -416,10 +416,11 @@ function convertArray(inputCalculation) { //inputarray
     for (var i = 0; i < resultArray.length; i += 4) {
         C = inputCalculation.resultObj.resultData[counter];
 
+        const percentage = C / global_inf_n;
 
         arg = increment * C;
         faktorR = (0.5 * Math.sin(arg)) + 0.5
-        faktorG = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.5;
+        faktorG = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 1)) + 0.2;
         faktorB = (0.5 * Math.sin(arg + (2 * Math.PI) / 3 * 2)) + 0.5;
 
 
@@ -432,7 +433,10 @@ function convertArray(inputCalculation) { //inputarray
         resultArray[i + 0] = R;   //R
         resultArray[i + 1] = G;   //G
         resultArray[i + 2] = B;   //B
-        resultArray[i + 3] = 255; //A
+
+        if(percentage < 0.1){
+            resultArray[i + 3] = (255 * percentage); //A
+        } else{resultArray[i + 3] = 255}
 
         faktorR = 0;
         faktorG = 0;
