@@ -2,9 +2,16 @@ package microservices.book.mandelbrot.service.util;
 
 import microservices.book.mandelbrot.domain.CalcParameters;
 import microservices.book.mandelbrot.domain.CalcResult;
+import microservices.book.mandelbrot.domain.Calculation;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public final class CalcUtils {
 
@@ -170,4 +177,70 @@ public final class CalcUtils {
 
         return resultList;
     }
+
+    public static Calculation performParallelCalculation (CalcParameters p){
+        long startTimeParallel = System.currentTimeMillis();
+
+        int amountOfCoordinates = p.getX() * p.getY();
+        int[] resultArray = new int[amountOfCoordinates];
+        int coordsPerSubArea = Math.floorDiv(amountOfCoordinates, p.getDivider());
+        List<Coordinate> allCoords = CalcUtils.makeCoordinates(p);
+
+        int coreCount = Runtime.getRuntime().availableProcessors();
+        ExecutorService service = Executors.newFixedThreadPool(coreCount);
+
+        List<CalcTaskOld> calcTasks = new ArrayList<>(p.getDivider());
+        int calcTime = 0;
+        for (int i = 0; i < p.getDivider(); i++) {
+            CalcTaskOld task = new CalcTaskOld(i, p, allCoords);
+            calcTasks.add(task);
+        }
+        try {
+            List<Future<CalcSubResult>> futures = service.invokeAll(calcTasks);
+            for (Future<CalcSubResult> future : futures) {
+                int index = (coordsPerSubArea * (future.get().getOrder()));
+                for (int j = 0; j < future.get().getSubResultArray().length; j++) {
+                    resultArray[j + index] = future.get().getSubResultArray()[j];
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        calcTime = (int) (System.currentTimeMillis() - startTimeParallel);
+        CalcResult calcResult = new CalcResult(resultArray, calcTime, 0);
+        return new Calculation(p, calcResult, new Timestamp(new Date().getTime()));
+    }
+
+
+    static final class CalcTaskOld  implements Callable<CalcSubResult> {
+        int order;
+        CalcParameters parameters;
+        List<Coordinate> allCoords;
+
+        public CalcTaskOld(int order, CalcParameters parameters, List<Coordinate> allCoords) {
+            this.order = order;
+            this.parameters = parameters;
+            this.allCoords = allCoords;
+        }
+
+        @Override
+        public CalcSubResult call() {
+            int[] subResult = new int[0];
+            long calcTime = 0;
+            try {
+                List<Coordinate> subArea = CalcUtils.pickOutSubSetOfCoordinates(order, parameters.getDivider(), allCoords);
+                long startTime = System.currentTimeMillis();
+                subResult = CalcUtils.calcArea(subArea, parameters.getInf_n());
+                long finishTime = System.currentTimeMillis();
+                calcTime = finishTime - startTime;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return new CalcSubResult(order, subResult, calcTime, 0);
+        }
+    }
+
+
 }

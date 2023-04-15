@@ -21,9 +21,15 @@ final class CalcParametersController {
         this.calculationService = calculationService;
     }
 
-    @PostMapping("/calcParallel")
+    @PostMapping("/calcMandelbrot")
     ResponseEntity<Calculation> calcParallel(@RequestBody CalcParameters calcParameters) {
-        Calculation calculation = calculationService.performParallelCalculation(calcParameters);
+        Calculation calculation = calculationService.performParallelMandelbrotCalculation(calcParameters);
+        return new ResponseEntity<>(calculation, HttpStatus.OK);
+    }
+
+    @PostMapping("/calcJulia")
+    ResponseEntity<Calculation> calcJulia(@RequestBody CalcParameters calcParameters) {
+        Calculation calculation = calculationService.performParallelJuliaSetCalculation(calcParameters);
         return new ResponseEntity<>(calculation, HttpStatus.OK);
     }
 

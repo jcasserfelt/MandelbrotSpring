@@ -1,20 +1,24 @@
 package microservices.book.mandelbrot.service.util;
 
-import microservices.book.mandelbrot.domain.CalcParameters;
-
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
-public final class CalcTask implements Callable<CalcSubResult> {
+public class CalcTask implements Callable<CalcSubResult> {
 
-    int order;
-    CalcParameters parameters;
-    List<Coordinate> allCoords;
+    private final int order;
+    private final int divider; // todo remove
+    private final List<Coordinate> coordinates; // todo remove
+    private final Supplier<int[]> calculationJob;
 
-    public CalcTask(int order, CalcParameters parameters, List<Coordinate> allCoords) {
+    public CalcTask(int order,
+                    int parameters,
+                    List<Coordinate> coordinates,
+                    Supplier<int[]> calculationJob) {
         this.order = order;
-        this.parameters = parameters;
-        this.allCoords = allCoords;
+        this.divider = parameters;
+        this.coordinates = coordinates;
+        this.calculationJob = calculationJob;
     }
 
     @Override
@@ -22,9 +26,8 @@ public final class CalcTask implements Callable<CalcSubResult> {
         int[] subResult = new int[0];
         long calcTime = 0;
         try {
-            List<Coordinate> subArea = CalcUtils.pickOutSubSetOfCoordinates(order, parameters.getDivider(), allCoords);
             long startTime = System.currentTimeMillis();
-            subResult = CalcUtils.calcArea(subArea, parameters.getInf_n());
+            subResult = calculationJob.get();
             long finishTime = System.currentTimeMillis();
             calcTime = finishTime - startTime;
         } catch (Exception e) {

@@ -1,7 +1,6 @@
 package microservices.book.mandelbrot.service;
 
 import microservices.book.mandelbrot.domain.*;
-import microservices.book.mandelbrot.service.util.Coordinate;
 
 import java.util.List;
 
@@ -15,8 +14,9 @@ public interface CalculationService {
 
     List<CalculationsRepresentation> getAllCalculationsRepresentations();
 
-    Calculation performParallelCalculation(CalcParameters parameters);
+    Calculation performParallelMandelbrotCalculation(CalcParameters parameters);
 
+    Calculation performParallelJuliaSetCalculation(CalcParameters calcParameters);
 }
 
 
