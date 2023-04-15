@@ -26,7 +26,7 @@ public class CalcTask implements Callable<CalcSubResult> {
         int tempResult = 0;
         int totalIterations = 0;
         for (Coordinate c : coords) {
-            tempResult = calculateIntPoint(c.getXVal(), c.getYVal(), this.parameters.getInf_n());
+            tempResult = calculateIntPoint(c.getXVal(), c.getYVal(), parameters.getInf_n());
             resultArray[counter] = tempResult;
             totalIterations += tempResult;
             counter++;
@@ -69,7 +69,7 @@ public class CalcTask implements Callable<CalcSubResult> {
         int[] subResult = new int[0];
         long calcTime = 0;
         try {
-            List<Coordinate> subArea = pickOutSubSetOfCoordinates(this.order, parameters.getDivider(), allCoords);
+            List<Coordinate> subArea = pickOutSubSetOfCoordinates(order, parameters.getDivider(), allCoords);
             long startTime = System.currentTimeMillis();
             subResult = calcArea(subArea);
             long finishTime = System.currentTimeMillis();
@@ -78,6 +78,6 @@ public class CalcTask implements Callable<CalcSubResult> {
             e.printStackTrace();
         }
 
-        return new CalcSubResult(this.order, subResult, calcTime, 0);
+        return new CalcSubResult(order, subResult, calcTime, 0);
     }
 }
