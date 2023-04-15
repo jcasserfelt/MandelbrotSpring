@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mandelbrot")
+@RequestMapping("/fractal")
 final class CalcParametersController {
 
     private final CalculationService calculationService;
