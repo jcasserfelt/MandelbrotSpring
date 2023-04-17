@@ -318,6 +318,21 @@ function drawCanvasFromCalculation(inputCalculation) {
     ctx.putImageData(enNyImageData, 0, 0);
 }
 
+function drawCrosshair() {
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var centerX = canvas.width / 2;
+    var centerY = canvas.height / 2;
+    var crosshairSize = 20;
+    ctx.beginPath();
+    ctx.moveTo(centerX - crosshairSize / 2, centerY);
+    ctx.lineTo(centerX + crosshairSize / 2, centerY);
+    ctx.moveTo(centerX, centerY - crosshairSize / 2);
+    ctx.lineTo(centerX, centerY + crosshairSize / 2);
+    ctx.stroke();
+}
+
+
 // todo refine redo reload
 function drawCanvas(inputCalculation) {
     x = $("#x").val();
@@ -337,6 +352,7 @@ function drawCanvas(inputCalculation) {
     }
     //    console.log(coolArray);
     ctx.putImageData(enNyImageData, 0, 0);
+    drawCrosshair()
     updateCalcDetailsTable(inputCalculation);
 }
 
@@ -536,6 +552,20 @@ function getCalcFromDBbyID(id) {
     })
 }
 
+function deleteCalculationById(id) {
+    $.ajax({
+        url: '/fractal/deleteCalculationById/' + id,
+        type: 'DELETE',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,
+        success: function (result) {
+            console.log(result);
+            // drawCanvasFromCalculation(result);
+        }
+    })
+}
+
 function updateCalcDetailsTable(calculation) {
     var calcTime = calculation.resultObj.calculationTime;
     var totalIterations = (calculation.resultObj.totalIterations).toExponential(3);
@@ -581,6 +611,7 @@ function updateCalcList() {
             for (var key in result) {
                 var obj = result[key];
                 var buttonString = "<button type=\"button\" id=\"load-calc-button2\" onclick=\"getCalcFromDBbyID(" + obj.id + ")\">load</button>";
+                var deleteButtonString = "<button type=\"button\" id=\"delete-calc-button\" onclick=\"deleteCalculationById(" + obj.id + ")\">delete</button>";
                 var htmlString = "";
                 htmlString += "<tr>";
                 htmlString += "<td>" + obj.id + "</td>";
@@ -589,8 +620,9 @@ function updateCalcList() {
                 htmlString += "<td>" + obj.calcParameters.min_c_im + "</td>";
                 htmlString += "<td>" + obj.calcParameters.max_c_im + "</td>";
                 htmlString += "<td>" + obj.calcParameters.x + ' x ' + obj.calcParameters.y + "</td>";
-                htmlString += "<td>" + obj.timestamp.substring(0,16) + "</td>";
+                htmlString += "<td>" + obj.timestamp.substring(0, 16) + "</td>";
                 htmlString += "<td>" + buttonString + "</td>";
+                htmlString += "<td>" + deleteButtonString + "</td>";
                 htmlString += "</tr>";
                 table.innerHTML += htmlString;
             }
