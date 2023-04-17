@@ -5,6 +5,7 @@ import microservices.book.mandelbrot.domain.CalcParameters;
 import microservices.book.mandelbrot.domain.Calculation;
 import microservices.book.mandelbrot.domain.CalculationsRepresentation;
 import microservices.book.mandelbrot.repository.CalculationRepository;
+import microservices.book.mandelbrot.service.util.parallel.ParallelBurningShipCalculation;
 import microservices.book.mandelbrot.service.util.parallel.ParallelJuliaCalculation;
 import microservices.book.mandelbrot.service.util.parallel.ParallelMandelbrotCalculation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,12 @@ public class CalculationServiceImp implements CalculationService {
     @Override
     public Calculation performParallelJuliaSetCalculation(CalcParameters calcParameters) {
         ParallelJuliaCalculation calculation = new ParallelJuliaCalculation();
+        return calculation.performParallelCalculation(calcParameters);
+    }
+
+    @Override
+    public Calculation performParallelBurningShipCalculation(CalcParameters calcParameters) {
+        ParallelBurningShipCalculation calculation = new ParallelBurningShipCalculation();
         return calculation.performParallelCalculation(calcParameters);
     }
 }

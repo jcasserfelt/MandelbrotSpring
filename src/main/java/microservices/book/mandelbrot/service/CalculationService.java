@@ -17,6 +17,8 @@ public interface CalculationService {
     Calculation performParallelMandelbrotCalculation(CalcParameters parameters);
 
     Calculation performParallelJuliaSetCalculation(CalcParameters calcParameters);
+
+    Calculation performParallelBurningShipCalculation(CalcParameters calcParameters);
 }
 
 
