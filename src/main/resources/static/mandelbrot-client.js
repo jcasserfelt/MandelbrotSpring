@@ -588,8 +588,8 @@ function updateCalcList() {
                 htmlString += "<td>" + obj.calcParameters.max_c_re + "</td>";
                 htmlString += "<td>" + obj.calcParameters.min_c_im + "</td>";
                 htmlString += "<td>" + obj.calcParameters.max_c_im + "</td>";
-                htmlString += "<td>" + obj.calcParameters.x * obj.calcParameters.y + "</td>";
-                htmlString += "<td>" + obj.timestamp + "</td>";
+                htmlString += "<td>" + obj.calcParameters.x + ' x ' + obj.calcParameters.y + "</td>";
+                htmlString += "<td>" + obj.timestamp.substring(0,16) + "</td>";
                 htmlString += "<td>" + buttonString + "</td>";
                 htmlString += "</tr>";
                 table.innerHTML += htmlString;
