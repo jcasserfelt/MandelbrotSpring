@@ -45,6 +45,12 @@ final class CalcParametersController {
         return new ResponseEntity<>("success", HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/deleteCalculationById/{id}")
+    ResponseEntity<String> deleteCalculation(@PathVariable Long id) {
+        calculationService.deleteCalculationById(id);
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
     @GetMapping("/getCalculation/{id}")
     ResponseEntity<Calculation> getCalculationById(@PathVariable Long id) {
         Calculation result = calculationService.getCalculationById(id);

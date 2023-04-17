@@ -32,6 +32,12 @@ public class CalculationServiceImp implements CalculationService {
         return "save successful";
     }
 
+    @Transactional
+    @Override
+    public void deleteCalculationById(Long id) {
+        calculationRepository.deleteById(id);
+    }
+
     @Override
     public Calculation getCalculationById(Long id) {
         Calculation result = calculationRepository.findFirstById(id).get();

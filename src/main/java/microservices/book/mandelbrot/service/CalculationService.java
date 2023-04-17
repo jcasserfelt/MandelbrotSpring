@@ -8,6 +8,8 @@ public interface CalculationService {
 
     String saveCalculationToDatabase(Calculation calculation);
 
+    void deleteCalculationById(Long id);
+
     Calculation getCalculationById(Long id);
 
     List<Calculation> getAllCalculations();
