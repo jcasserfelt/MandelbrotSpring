@@ -35,7 +35,7 @@ final class CalcParametersController {
 
     @PostMapping("/calcBurningShip")
     ResponseEntity<Calculation> calcBurningShip(@RequestBody CalcParameters calcParameters) {
-        Calculation calculation = calculationService.performParallelJuliaSetCalculation(calcParameters);
+        Calculation calculation = calculationService.performParallelBurningShipCalculation(calcParameters);
         return new ResponseEntity<>(calculation, HttpStatus.OK);
     }
 

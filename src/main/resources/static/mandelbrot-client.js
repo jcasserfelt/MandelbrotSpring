@@ -7,6 +7,7 @@ var global_x;
 var global_y;
 var global_inf_n;
 var global_divider;
+var global_fractalType = document.getElementById("fractal-type-selector").value;
 
 function updateInputFields() {
     document.getElementById("min_c_re").value = global_min_c_re;
@@ -82,13 +83,14 @@ function goSomeWhere(input, newOrOld) {
         }
     };
 
-    var urlString = '';
-    if (newOrOld === "old") {
-        urlString = '/fractal/test';
-    } else urlString = '/fractal/calcMandelbrot';
+    // var urlString = '';
+    // if (newOrOld === "old") {
+    //     urlString = '/fractal/test';
+    // } else urlString = `/fractal/${global_fractalType}`;
+    global_fractalType = document.getElementById("fractal-type-selector").value;
 
     $.ajax({
-        url: urlString,
+        url: `/fractal/${global_fractalType}`,
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -114,8 +116,10 @@ function parseGlobalVariablesToFloat() {
     global_y = parseFloat(global_y);
     global_inf_n = parseFloat(global_inf_n);
     global_divider = parseFloat(global_divider);
+    global_fractalType = $('#fractal-type-selector').value;
 }
 
+// todo Calculate button
 function sendParameters() {
     global_min_c_re = $("#min_c_re").val();
     global_min_c_im = $("#min_c_im").val();
@@ -125,6 +129,7 @@ function sendParameters() {
     global_y = $("#y").val();
     global_inf_n = $("#inf_n").val();
     global_divider = $("#divider").val();
+    global_fractalType = $('#fractal-type-selector').val()
 
     var input = {
         parameterObject: {
@@ -139,8 +144,10 @@ function sendParameters() {
         }
     };
 
+    // global_fractalType = document.getElementById("fractal-type-selector").value;
+
     $.ajax({
-        url: '/fractal/calcMandelbrot',
+        url: `/fractal/${global_fractalType}`,
         type: 'POST',
         data: JSON.stringify(input.parameterObject),
         contentType: "application/json; charset=utf-8",
@@ -396,6 +403,12 @@ function convertArray_failArmy(inputCalculation) {
 
 }
 
+function changeFractalType() {
+    var currentFractalType = document.getElementById("fractal-type-selector").value
+    global_fractalType = currentFractalType
+    console.log("global_fractalType", global_fractalType)
+}
+
 function convertArray(inputCalculation) { //inputarray
     setGlobalVariablesFromCalculationObject(inputCalculation);
     //400
@@ -434,9 +447,9 @@ function convertArray(inputCalculation) { //inputarray
         resultArray[i + 1] = G;   //G
         resultArray[i + 2] = B;   //B
 
-        if(percentage < 0.1){
+        if (percentage < 0.1) {
             resultArray[i + 3] = (255 * percentage); //A
-        } else{resultArray[i + 3] = 255}
+        } else { resultArray[i + 3] = 255 }
 
         faktorR = 0;
         faktorG = 0;
