@@ -47,26 +47,30 @@ public abstract class AbstractParallelFractalCalculation {
         int totalAmountOfCoordinates = parameters.getX() * parameters.getY();
         int[] resultArray = new int[totalAmountOfCoordinates];
         int coordinatesPerSubArea = Math.floorDiv(totalAmountOfCoordinates, parameters.getDivider());
-
         List<Coordinate> allCoordinates = CalcUtils.makeCoordinates(parameters);
 
-        int coreCount = Runtime.getRuntime().availableProcessors();
-        ExecutorService service = Executors.newFixedThreadPool(coreCount);
-
-        List<CalcTask> calcTasksNew = new ArrayList<>(parameters.getDivider());
+        List<CalcTask> calcTasks = new ArrayList<>(parameters.getDivider());
         int calcTime = 0;
 
         // create a list of calculation tasks that will be run in parallel
         for (int i = 0; i < parameters.getDivider(); i++) {
             List<Coordinate> currentSubArea = CalcUtils.pickOutSubSetOfCoordinates(i, parameters.getDivider(), allCoordinates);
 
-            CalcTask task = new CalcTask(i, parameters.getDivider(), currentSubArea, () -> calculateArea(currentSubArea, parameters.getInf_n()));
-            calcTasksNew.add(task);
+            CalcTask task = new CalcTask(
+                    i,
+                    parameters.getDivider(),
+                    currentSubArea,
+                    () -> calculateArea(currentSubArea, parameters.getInf_n()));
+
+            calcTasks.add(task);
         }
 
         // execute the calculation tasks 🎆🎇🌠💫
         try {
-            List<Future<CalcSubResult>> futures = service.invokeAll(calcTasksNew);
+            int coreCount = Runtime.getRuntime().availableProcessors();
+            ExecutorService service = Executors.newFixedThreadPool(coreCount);
+
+            List<Future<CalcSubResult>> futures = service.invokeAll(calcTasks);
             for (Future<CalcSubResult> future : futures) {
                 int index = (coordinatesPerSubArea * (future.get().getOrder()));
                 for (int j = 0; j < future.get().getSubResultArray().length; j++) {
