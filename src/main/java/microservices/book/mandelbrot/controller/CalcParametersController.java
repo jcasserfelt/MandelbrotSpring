@@ -23,6 +23,7 @@ final class CalcParametersController {
 
     // todo add error handling in endpoints
 
+    // todo convert to getMapping
     @PostMapping("/calcMandelbrot")
     ResponseEntity<Calculation> calcParallel(@RequestBody CalcParameters calcParameters) {
         Calculation calculation = calculationService.performParallelMandelbrotCalculation(calcParameters);
