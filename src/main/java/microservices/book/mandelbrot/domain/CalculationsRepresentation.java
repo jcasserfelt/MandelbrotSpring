@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
+// todo remove this class, and use some extends approach
+
 @Getter
 @Setter
 public final class CalculationsRepresentation {
