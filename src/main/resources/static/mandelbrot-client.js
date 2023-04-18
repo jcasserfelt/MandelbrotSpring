@@ -605,7 +605,7 @@ function updateCalcList() {
             // console.log(letsSee);
             // console.log(result);
 
-            var emptyTable = "<tr> <th>id</th> <th>min x</th> <th>max x</th> <th>min y</th> <th>max y</th> <th>resolution</th> <th>timestamp</th> <th>view</th> </tr>";
+            var emptyTable = "<tr> <th>id</th> <th>min x</th> <th>max x</th> <th>min y</th> <th>max y</th> <th>resolution</th> <th>timestamp</th> <th>view</th> <th>safety space</th> </tr>";
             var table = document.getElementById("calc-html-list");
             table.innerHTML = emptyTable;
             for (var key in result) {
@@ -622,6 +622,7 @@ function updateCalcList() {
                 htmlString += "<td>" + obj.calcParameters.x + ' x ' + obj.calcParameters.y + "</td>";
                 htmlString += "<td>" + obj.timestamp.substring(0, 16) + "</td>";
                 htmlString += "<td>" + buttonString + "</td>";
+                htmlString += "<td>" + "</td>";
                 htmlString += "<td>" + deleteButtonString + "</td>";
                 htmlString += "</tr>";
                 table.innerHTML += htmlString;
