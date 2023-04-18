@@ -20,6 +20,7 @@ public abstract class AbstractParallelFractalCalculation {
 
     protected abstract int calculatePoint(double x, double y, int iterations);
 
+    // todo return object with resultData, calcTime and iterations here
     protected int[] calculateArea(List<Coordinate> areaCoordinates, int maxIteration) {
         int[] resultArray = new int[areaCoordinates.size()];
 
@@ -54,6 +55,8 @@ public abstract class AbstractParallelFractalCalculation {
 
         // create a list of calculation tasks that will be run in parallel
         for (int i = 0; i < parameters.getDivider(); i++) {
+
+            // move to CalcTask call() method? i.e do in parallel
             List<Coordinate> currentSubArea = CalcUtils.pickOutSubSetOfCoordinates(i, parameters.getDivider(), allCoordinates);
 
             CalcTask task = new CalcTask(

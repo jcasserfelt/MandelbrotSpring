@@ -8,7 +8,7 @@ public class CalcTask implements Callable<CalcSubResult> {
 
     private final int order;
     private final int divider; // todo remove
-    private final List<Coordinate> coordinates; // todo remove
+    private final List<Coordinate> coordinates; // todo remove?
     private final Supplier<int[]> calculationJob;
 
     public CalcTask(int order,
@@ -23,7 +23,7 @@ public class CalcTask implements Callable<CalcSubResult> {
 
     @Override
     public CalcSubResult call() {
-        int[] subResult = new int[0];
+        int[] subResult = new int[coordinates.size()];
         long calcTime = 0;
         try {
             long startTime = System.currentTimeMillis();
@@ -34,6 +34,7 @@ public class CalcTask implements Callable<CalcSubResult> {
             e.printStackTrace();
         }
 
+        // todo add calcTime and iterations here
         return new CalcSubResult(order, subResult, calcTime, 0);
     }
 }

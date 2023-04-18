@@ -21,6 +21,8 @@ final class CalcParametersController {
         this.calculationService = calculationService;
     }
 
+    // todo add error handling in endpoints
+
     @PostMapping("/calcMandelbrot")
     ResponseEntity<Calculation> calcParallel(@RequestBody CalcParameters calcParameters) {
         Calculation calculation = calculationService.performParallelMandelbrotCalculation(calcParameters);
